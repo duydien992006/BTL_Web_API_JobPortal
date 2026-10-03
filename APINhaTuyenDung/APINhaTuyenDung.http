@@ -1,0 +1,6 @@
+@APINhaTuyenDung_HostAddress = http://localhost:5257
+
+GET {{APINhaTuyenDung_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

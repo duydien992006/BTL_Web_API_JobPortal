@@ -1,0 +1,6 @@
+@APINguoiDung_HostAddress = http://localhost:5184
+
+GET {{APINguoiDung_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

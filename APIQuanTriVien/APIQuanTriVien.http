@@ -1,0 +1,6 @@
+@APIQuanTriVien_HostAddress = http://localhost:5288
+
+GET {{APIQuanTriVien_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@APIUngVien_HostAddress = http://localhost:5230
+
+GET {{APIUngVien_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
