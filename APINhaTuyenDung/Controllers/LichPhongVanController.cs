@@ -14,7 +14,7 @@ namespace APINhaTuyenDung.Controllers
 
         [HttpPost("tao-lich")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> Tao([FromBody] LichPhongVanModel model)
+        public async Task<IActionResult> Tao([FromBody] TaoLichPhongVanModel model)   // đổi kiểu tham số
         {
             var kq = await _business.TaoAsync(model);
             if (kq.ThanhCong) return Ok(kq);

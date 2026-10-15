@@ -14,7 +14,7 @@ namespace APINhaTuyenDung.Controllers
 
         [HttpPost("gui")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> Gui([FromBody] DeNghiTuyenDungModel model)
+        public async Task<IActionResult> Gui([FromBody] GuiDeNghiModel model)   // đổi kiểu tham số
         {
             var kq = await _business.GuiAsync(model);
             if (kq.ThanhCong) return Ok(kq);

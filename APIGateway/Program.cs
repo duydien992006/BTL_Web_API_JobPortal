@@ -1,15 +1,36 @@
-// ============ APIGateway/Program.cs ============
+﻿// ============ APIGateway/Program.cs ============
 using APIGateway.Middleware;
+using Common.Extensions;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/startup-.log", rollingInterval: RollingInterval.Day)
+    .CreateBootstrapLogger();
 
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    builder.AddJobPortalLogging("APIGateway");
+    builder.Services.AddJobPortalErrorHandling();
 
-app.UseMiddleware<JwtValidationMiddleware>();
+    builder.Services.AddReverseProxy()
+        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-app.MapReverseProxy();
+    var app = builder.Build();
 
-app.Run();
+    app.UseJobPortalErrorHandling();                       // 1) correlation + log + bắt lỗi
+    app.UseMiddleware<JwtValidationMiddleware>();          // 2) kiểm tra JWT
+    app.MapReverseProxy();                                 // 3) chuyển tiếp
+
+    app.Run();
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Gateway không khởi động được");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

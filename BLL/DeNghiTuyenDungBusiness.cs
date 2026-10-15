@@ -14,12 +14,20 @@ namespace BLL
         private readonly IDeNghiTuyenDungRepository _repo;
         public DeNghiTuyenDungBusiness(IDeNghiTuyenDungRepository repo) { _repo = repo; }
 
-        public async Task<PhanHoiModel> GuiAsync(DeNghiTuyenDungModel model)
+        public async Task<PhanHoiModel> GuiAsync(GuiDeNghiModel model)
         {
             if (model.MucLuongDeNghi <= 0)
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Mức lương đề nghị không hợp lệ" };
 
-            int id = await _repo.GuiAsync(model);
+            // Chuyển từ GuiDeNghiModel sang DeNghiTuyenDungModel đầy đủ trước khi gọi xuống Repository
+            var deNghiModel = new DeNghiTuyenDungModel
+            {
+                DonUngTuyenId = model.DonUngTuyenId,
+                MucLuongDeNghi = model.MucLuongDeNghi,
+                NgayBatDauLamViec = model.NgayBatDauLamViec
+            };
+
+            int id = await _repo.GuiAsync(deNghiModel);
             return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã gửi đề nghị tuyển dụng", DuLieu = id };
         }
 

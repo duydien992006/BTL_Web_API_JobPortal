@@ -43,5 +43,11 @@ namespace BLL
 
         public async Task<CongTyModel> LayTheoIdAsync(int id) { return await _repo.LayTheoIdAsync(id); }
         public async Task<IEnumerable<CongTyModel>> LayTatCaAsync() { return await _repo.LayTatCaAsync(); }
+        public async Task<PhanHoiModel> XoaAsync(int id)
+        {
+            bool ok = await _repo.XoaAsync(id);
+            if (ok) return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã xóa công ty" };
+            return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không tìm thấy công ty" };
+        }
     }
 }

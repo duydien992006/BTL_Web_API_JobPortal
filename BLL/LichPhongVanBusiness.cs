@@ -14,12 +14,20 @@ namespace BLL
         private readonly ILichPhongVanRepository _repo;
         public LichPhongVanBusiness(ILichPhongVanRepository repo) { _repo = repo; }
 
-        public async Task<PhanHoiModel> TaoAsync(LichPhongVanModel model)
+        public async Task<PhanHoiModel> TaoAsync(TaoLichPhongVanModel model)
         {
             if (model.ThoiGianPhongVan <= DateTime.UtcNow)
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Thời gian phỏng vấn phải ở tương lai" };
 
-            int id = await _repo.TaoAsync(model);
+            // Chuyển từ TaoLichPhongVanModel sang LichPhongVanModel đầy đủ trước khi gọi xuống Repository
+            var lichModel = new LichPhongVanModel
+            {
+                DonUngTuyenId = model.DonUngTuyenId,
+                ThoiGianPhongVan = model.ThoiGianPhongVan,
+                DiaDiemPhongVan = model.DiaDiemPhongVan
+            };
+
+            int id = await _repo.TaoAsync(lichModel);
             return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã tạo lịch phỏng vấn", DuLieu = id };
         }
 

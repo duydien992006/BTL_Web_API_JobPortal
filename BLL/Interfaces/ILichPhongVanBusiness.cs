@@ -9,7 +9,7 @@ namespace BLL.Interfaces
 {
     public interface ILichPhongVanBusiness
     {
-        Task<PhanHoiModel> TaoAsync(LichPhongVanModel model);
+        Task<PhanHoiModel> TaoAsync(TaoLichPhongVanModel model);
         Task<PhanHoiModel> CapNhatKetQuaAsync(int id, string ketQua);
         Task<IEnumerable<LichPhongVanModel>> LayTheoDonUngTuyenAsync(int donUngTuyenId);
     }

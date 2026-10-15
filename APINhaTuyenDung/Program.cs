@@ -1,56 +1,75 @@
-﻿using BLL;
+﻿// ============ Program.cs (4 project API) ============
+using BLL;
+using Common.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System;
+using Serilog;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+// Bootstrap logger: ghi lại lỗi xảy ra TRƯỚC khi hệ thống logging chính được dựng xong
+// (VD: "Some services are not able to be constructed")
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/startup-.log", rollingInterval: RollingInterval.Day)
+    .CreateBootstrapLogger();
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-string secretKey = builder.Configuration["AppSettings:Secret"]
-    ?? throw new InvalidOperationException("Thiếu AppSettings:Secret trong appsettings.json");
-
-builder.Services.AddAuthentication(options =>
+try
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.AddJobPortalLogging("APINhaTuyenDung");          // <-- ĐỔI TÊN THEO TỪNG PROJECT
+
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    builder.Services.AddJobPortalErrorHandling();          // <-- MỚI
+
+    string secretKey = builder.Configuration["AppSettings:Secret"]
+        ?? throw new InvalidOperationException("Thiếu AppSettings:Secret trong appsettings.json");
+
+    builder.Services.AddAuthentication(options =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
-builder.Services.AddAuthorization();
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+    builder.Services.AddAuthorization();
 
-builder.Services.AddJobPortalServices();
+    builder.Services.AddJobPortalServices();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseJobPortalErrorHandling();                       // <-- MỚI: PHẢI đứng trước UseAuthentication
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+
+    Log.Information("Khởi động thành công, đang lắng nghe request");
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Ứng dụng không khởi động được");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

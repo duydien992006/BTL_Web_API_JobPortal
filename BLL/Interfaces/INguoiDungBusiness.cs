@@ -11,5 +11,6 @@ namespace BLL.Interfaces
         Task<PhanHoiModel> DangKyAsync(DangKyModel model);
         Task<PhanHoiModel> DangNhapAsync(DangNhapModel model);
         Task<PhanHoiModel> CapNhatAsync(CapNhatNguoiDungModel model);
+        Task<HoSoCaNhanModel> LayThongTinCaNhanAsync(int id);
     }
 }

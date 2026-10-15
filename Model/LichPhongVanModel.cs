@@ -14,4 +14,11 @@ namespace Model
         public string DiaDiemPhongVan { get; set; }
         public string KetQua { get; set; }
     }
+    // MỚI THÊM — dùng riêng cho request tạo lịch phỏng vấn, không cần Id/KetQua
+    public class TaoLichPhongVanModel
+    {
+        public int DonUngTuyenId { get; set; }
+        public DateTime ThoiGianPhongVan { get; set; }
+        public string DiaDiemPhongVan { get; set; }
+    }
 }

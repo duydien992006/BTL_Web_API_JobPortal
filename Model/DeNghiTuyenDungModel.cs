@@ -14,4 +14,11 @@ namespace Model
         public DateTime NgayBatDauLamViec { get; set; }
         public string TrangThai { get; set; }
     }
+    // MỚI THÊM — dùng riêng cho request gửi đề nghị, không cần Id/TrangThai
+    public class GuiDeNghiModel
+    {
+        public int DonUngTuyenId { get; set; }
+        public decimal MucLuongDeNghi { get; set; }
+        public DateTime NgayBatDauLamViec { get; set; }
+    }
 }

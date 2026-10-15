@@ -1,6 +1,7 @@
 ﻿using BLL.Interfaces;
 using DAL.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Model;
 using System;
@@ -17,11 +18,12 @@ namespace BLL
     {
         private readonly INguoiDungRepository _repo;
         private readonly IConfiguration _configuration;
-
-        public NguoiDungBusiness(INguoiDungRepository repo, IConfiguration configuration)
+        private readonly ILogger<NguoiDungBusiness> _logger;
+        public NguoiDungBusiness(INguoiDungRepository repo, IConfiguration configuration, ILogger<NguoiDungBusiness> logger)
         {
             _repo = repo;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<PhanHoiModel> DangKyAsync(DangKyModel model)
@@ -52,11 +54,20 @@ namespace BLL
         {
             var nguoiDung = await _repo.LayTheoEmailAsync(model.Email);
             if (nguoiDung == null)
+            {
+                _logger.LogWarning("Đăng nhập thất bại: không tồn tại tài khoản {Email}", model.Email);
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Email hoặc mật khẩu không đúng" };
+            }
 
             bool matKhauDung = BCrypt.Net.BCrypt.Verify(model.MatKhau, nguoiDung.MatKhauMaHoa);
             if (!matKhauDung)
+            {
+                _logger.LogWarning("Đăng nhập thất bại: sai mật khẩu, tài khoản {Email}", model.Email);
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Email hoặc mật khẩu không đúng" };
+            }
+
+            _logger.LogInformation("Đăng nhập thành công: người dùng {NguoiDungId} vai trò {VaiTro}",
+                nguoiDung.Id, nguoiDung.VaiTro);
 
             string token = TaoJwtToken(nguoiDung);
             return new PhanHoiModel
@@ -87,6 +98,21 @@ namespace BLL
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddDays(1), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public async Task<HoSoCaNhanModel> LayThongTinCaNhanAsync(int id)
+        {
+            var nguoiDung = await _repo.LayTheoIdAsync(id);
+            if (nguoiDung == null) return null;
+
+            return new HoSoCaNhanModel
+            {
+                Id = nguoiDung.Id,
+                Email = nguoiDung.Email,
+                VaiTro = nguoiDung.VaiTro,
+                HoTen = nguoiDung.HoTen,
+                SoDienThoai = nguoiDung.SoDienThoai,
+                NgayTao = nguoiDung.NgayTao
+            };
         }
     }
 }

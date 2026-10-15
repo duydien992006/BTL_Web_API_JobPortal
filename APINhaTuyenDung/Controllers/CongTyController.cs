@@ -44,5 +44,24 @@ namespace APINhaTuyenDung.Controllers
             var ds = await _business.LayTatCaAsync();
             return Ok(ds);
         }
+
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "NhaTuyenDung")]
+        public async Task<IActionResult> CapNhat(int id, [FromBody] CongTyModel model)
+        {
+            model.Id = id;   // đảm bảo Id lấy từ URL, tránh client gửi sai Id trong Body
+            var kq = await _business.CapNhatAsync(model);
+            if (kq.ThanhCong) return Ok(kq);
+            return NotFound(kq);
+        }
+
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "NhaTuyenDung,QuanTriVien")]
+        public async Task<IActionResult> Xoa(int id)
+        {
+            var kq = await _business.XoaAsync(id);
+            if (kq.ThanhCong) return Ok(kq);
+            return NotFound(kq);
+        }
     }
 }
