@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -17,8 +18,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Gui([FromBody] GuiDeNghiModel model)   // đổi kiểu tham số
         {
             var kq = await _business.GuiAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
     }
 }

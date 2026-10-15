@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -17,8 +18,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Tao([FromBody] TaoTinTuyenDungModel model)
         {
             var kq = await _business.TaoAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpPut("{id:int}")]
@@ -26,8 +26,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> CapNhat(int id, [FromBody] TaoTinTuyenDungModel model)
         {
             var kq = await _business.CapNhatAsync(id, model);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpPut("{id:int}/duyet")]
@@ -35,8 +34,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Duyet(int id, [FromQuery] bool duyet)
         {
             var kq = await _business.DuyetAsync(id, duyet);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpPut("{id:int}/dong")]
@@ -44,8 +42,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Dong(int id)
         {
             var kq = await _business.DongAsync(id);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpDelete("{id:int}")]
@@ -53,8 +50,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Xoa(int id)
         {
             var kq = await _business.XoaAsync(id);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpGet("{id:int}")]

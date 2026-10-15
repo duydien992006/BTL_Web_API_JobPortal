@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -17,8 +18,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Tao([FromBody] CongTyModel model)
         {
             var kq = await _business.TaoAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpPut("{id:int}/xac-minh")]
@@ -26,8 +26,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> XacMinh(int id, [FromQuery] bool daXacMinh)
         {
             var kq = await _business.XacMinhAsync(id, daXacMinh);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpGet("{id:int}")]
@@ -51,8 +50,7 @@ namespace APINhaTuyenDung.Controllers
         {
             model.Id = id;   // đảm bảo Id lấy từ URL, tránh client gửi sai Id trong Body
             var kq = await _business.CapNhatAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpDelete("{id:int}")]
@@ -60,8 +58,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Xoa(int id)
         {
             var kq = await _business.XoaAsync(id);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
     }
 }

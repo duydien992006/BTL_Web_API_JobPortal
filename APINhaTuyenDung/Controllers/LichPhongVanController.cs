@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -17,8 +18,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> Tao([FromBody] TaoLichPhongVanModel model)   // đổi kiểu tham số
         {
             var kq = await _business.TaoAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpPut("{id:int}/ket-qua")]
@@ -26,8 +26,7 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> CapNhatKetQua(int id, [FromQuery] string ketQua)
         {
             var kq = await _business.CapNhatKetQuaAsync(id, ketQua);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpGet("theo-don/{donUngTuyenId:int}")]

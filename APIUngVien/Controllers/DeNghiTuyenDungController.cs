@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +17,7 @@ namespace APIUngVien.Controllers
         public async Task<IActionResult> PhanHoi(int id, [FromQuery] bool chapNhan)
         {
             var kq = await _business.PhanHoiAsync(id, chapNhan);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
 
         [HttpGet("theo-don/{donUngTuyenId:int}")]

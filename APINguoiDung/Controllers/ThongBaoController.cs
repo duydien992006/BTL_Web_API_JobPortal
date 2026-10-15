@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,8 +26,7 @@ namespace APINguoiDung.Controllers
         public async Task<IActionResult> DanhDauDaDoc(int id)
         {
             var kq = await _business.DanhDauDaDocAsync(id);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
     }
 }

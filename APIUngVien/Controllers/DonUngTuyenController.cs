@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -19,8 +20,7 @@ namespace APIUngVien.Controllers
             var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
             int ungVienId = claim != null ? int.Parse(claim.Value) : 0;
             var kq = await _business.NopDonAsync(model, ungVienId);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpGet("cua-toi")]

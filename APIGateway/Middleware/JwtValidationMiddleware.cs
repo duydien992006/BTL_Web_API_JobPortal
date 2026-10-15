@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Common.Problems;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Model;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,7 +37,6 @@ namespace APIGateway.Middleware
         {
             string authHeader = context.Request.Headers["Authorization"].ToString();
 
-            // Không gửi token -> cho qua, service phía sau tự quyết định có bắt buộc đăng nhập không
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
                 await _next(context);
@@ -43,8 +44,7 @@ namespace APIGateway.Middleware
             }
 
             string token = authHeader.Substring("Bearer ".Length).Trim();
-            string loiTuChoi = null;
-            string lyDoKyThuat = null;
+            string detail = null, maLoi = null, lyDoKyThuat = null;
 
             try
             {
@@ -52,32 +52,33 @@ namespace APIGateway.Middleware
             }
             catch (SecurityTokenExpiredException)
             {
-                loiTuChoi = "Token đã hết hạn, vui lòng đăng nhập lại";
+                detail = "Token đã hết hạn, vui lòng đăng nhập lại";
+                maLoi = "TOKEN_HET_HAN";
                 lyDoKyThuat = "Expired";
             }
             catch (Exception ex)
             {
-                loiTuChoi = "Token không hợp lệ";
+                detail = "Token không hợp lệ";
+                maLoi = "TOKEN_KHONG_HOP_LE";
                 lyDoKyThuat = ex.GetType().Name;
             }
 
-            if (loiTuChoi != null)
+            if (detail != null)
             {
-                // KHÔNG log nội dung token (là thông tin nhạy cảm)
+                // KHÔNG log nội dung token
                 _logger.LogWarning("Gateway từ chối token ({LyDo}) khi gọi {Method} {Path}",
                     lyDoKyThuat, context.Request.Method, context.Request.Path.Value);
 
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(new PhanHoiModel
-                {
-                    ThanhCong = false,
-                    ThongDiep = loiTuChoi,
-                    DuLieu = new { traceId = context.TraceIdentifier }
-                });
+                // RFC 6750: 401 phải kèm header WWW-Authenticate
+                context.Response.Headers["WWW-Authenticate"] = "Bearer error=\"invalid_token\"";
+
+                var problem = new ProblemDetails { Status = 401, Detail = detail };
+                problem.Extensions["maLoi"] = maLoi;
+                await ProblemDetailsHelper.GhiAsync(context, problem);
                 return;
             }
 
-            await _next(context); // nằm NGOÀI try
+            await _next(context);
         }
     }
 }

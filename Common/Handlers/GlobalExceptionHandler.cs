@@ -1,6 +1,8 @@
 ﻿using Common.Exceptions;
+using Common.Problems;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+
+
 namespace Common.Handlers
 {
     public class GlobalExceptionHandler : IExceptionHandler
@@ -29,93 +34,82 @@ namespace Common.Handlers
             string method = httpContext.Request.Method;
             string path = httpContext.Request.Path;
 
-            // Client tự hủy request (đóng tab, bấm Cancel) -> không phải lỗi hệ thống
+            // Client tự hủy request: không phải lỗi hệ thống
             if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
             {
                 _logger.LogInformation("Client đã hủy request {Method} {Path}", method, path);
                 return true;
             }
 
-            var (statusCode, thongDiep) = PhanLoai(exception);
+            var (status, detail, maLoi) = PhanLoai(exception);
 
-            // Log ĐÚNG 1 LẦN tại đây. Các tầng dưới (DAL/BLL) chỉ throw, không log lại.
-            if (statusCode >= 500)
-            {
-                _logger.LogError(exception, "Lỗi hệ thống {StatusCode} khi xử lý {Method} {Path}",
-                    statusCode, method, path);
-            }
+            // Log đúng 1 lần tại đây (các tầng dưới chỉ throw, không log lại)
+            if (status >= 500)
+                _logger.LogError(exception, "Lỗi hệ thống {StatusCode} ({MaLoi}) khi xử lý {Method} {Path}",
+                    status, maLoi, method, path);
             else
-            {
-                _logger.LogWarning("Yêu cầu bị từ chối {StatusCode} ({LoaiLoi}) tại {Method} {Path}: {LyDo}",
-                    statusCode, exception.GetType().Name, method, path, exception.Message);
-            }
+                _logger.LogWarning("Yêu cầu bị từ chối {StatusCode} ({MaLoi}) tại {Method} {Path}: {LyDo}",
+                    status, maLoi, method, path, exception.Message);
 
-            var duLieu = new Dictionary<string, object> { ["traceId"] = httpContext.TraceIdentifier };
+            var problem = new ProblemDetails { Status = status, Detail = detail };
+            problem.Extensions["maLoi"] = maLoi;
+
+            // Chỉ lộ stack trace khi chạy Development. KHÔNG lộ ở Production
             if (_env.IsDevelopment())
-            {
-                // Chỉ lộ chi tiết khi chạy Development, KHÔNG lộ ở Production
-                duLieu["chiTiet"] = exception.ToString();
-            }
+                problem.Extensions["chiTiet"] = exception.ToString();
 
-            httpContext.Response.StatusCode = statusCode;
-            await httpContext.Response.WriteAsJsonAsync(new PhanHoiModel
-            {
-                ThanhCong = false,
-                ThongDiep = thongDiep,
-                DuLieu = duLieu
-            }, cancellationToken);
-
-            return true; // đã xử lý xong, không chuyển cho handler khác
+            await ProblemDetailsHelper.GhiAsync(httpContext, problem);
+            return true;
         }
 
-        private static (int StatusCode, string ThongDiep) PhanLoai(Exception ex)
+        private static (int Status, string Detail, string MaLoi) PhanLoai(Exception ex)
         {
             if (ex is AppException app)
-                return (app.StatusCode, app.Message);
+                return (app.StatusCode, app.Message, app.MaLoi);
 
             var sql = ex as SqlException ?? ex.InnerException as SqlException;
             if (sql != null)
                 return PhanLoaiSql(sql);
 
             if (ex is BadHttpRequestException bad)
-                return (bad.StatusCode, "Yêu cầu gửi lên không hợp lệ");
+                return (bad.StatusCode, "Yêu cầu gửi lên không hợp lệ", "YEU_CAU_KHONG_HOP_LE");
 
-            // VD: int.Parse trên dữ liệu client gửi (danhSachKyNangId = "abc")
             if (ex is FormatException)
-                return (400, "Dữ liệu gửi lên không đúng định dạng");
+                return (400, "Dữ liệu gửi lên không đúng định dạng", "SAI_DINH_DANG");
 
-            return (500, ThongDiepMacDinh);
+            // NullReferenceException và mọi lỗi không lường trước rơi vào đây
+            return (500, ThongDiepMacDinh, "LOI_HE_THONG");
         }
 
-        private static (int StatusCode, string ThongDiep) PhanLoaiSql(SqlException sql)
+        private static (int Status, string Detail, string MaLoi) PhanLoaiSql(SqlException sql)
         {
             switch (sql.Number)
             {
-                case 547: // vi phạm FOREIGN KEY / CHECK
+                case 547:
                     return sql.Message.Contains("DELETE")
-                        ? (409, "Không thể xóa vì dữ liệu đang được sử dụng ở nơi khác")
-                        : (409, "Dữ liệu tham chiếu không tồn tại hoặc không hợp lệ");
+                        ? (409, "Không thể xóa vì dữ liệu đang được sử dụng ở nơi khác", "DB_RANG_BUOC_KHOA_NGOAI")
+                        : (409, "Dữ liệu tham chiếu không tồn tại hoặc không hợp lệ", "DB_RANG_BUOC_KHOA_NGOAI");
 
-                case 2601: // trùng unique index
-                case 2627: // trùng primary key / unique constraint
-                    return (409, "Dữ liệu bị trùng lặp, đã tồn tại bản ghi tương tự");
+                case 2601:
+                case 2627:
+                    return (409, "Dữ liệu bị trùng lặp, đã tồn tại bản ghi tương tự", "DB_TRUNG_DU_LIEU");
 
-                case 1205: // deadlock
-                    return (503, "Hệ thống đang bận, vui lòng thử lại sau ít giây");
+                case 1205:
+                    return (503, "Hệ thống đang bận, vui lòng thử lại sau ít giây", "DB_DEADLOCK");
 
-                case -2: // timeout
-                    return (504, "Cơ sở dữ liệu phản hồi quá chậm, vui lòng thử lại");
+                case -2:
+                    return (504, "Cơ sở dữ liệu phản hồi quá chậm, vui lòng thử lại", "DB_TIMEOUT");
 
-                case 53:    // không tìm thấy server
-                case 4060:  // không mở được database
-                case 18456: // đăng nhập SQL thất bại
+                case 53:
+                case 4060:
+                case 18456:
                 case -1:
                 case 2:
                 case 258:
-                    return (503, "Không kết nối được tới cơ sở dữ liệu");
+                    return (503, "Không kết nối được tới cơ sở dữ liệu", "DB_KHONG_KET_NOI");
 
                 default:
-                    return (500, ThongDiepMacDinh);
+                    return (500, ThongDiepMacDinh, "DB_LOI_KHAC");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
@@ -15,8 +16,7 @@ namespace APINguoiDung.Controllers
         public async Task<IActionResult> Tao([FromBody] TaoKyNangModel model)
         {
             var kq = await _business.TaoAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpGet]

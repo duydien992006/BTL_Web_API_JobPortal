@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -30,8 +31,7 @@ namespace APINguoiDung.Controllers
             int id = claim != null ? int.Parse(claim.Value) : 0;
             model.Id = id;   // chỉ cho phép tự sửa thông tin của chính mình, không cho sửa người khác
             var kq = await _business.CapNhatAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return NotFound(kq);
+            return this.KetQua(kq, 404);
         }
     }
 }

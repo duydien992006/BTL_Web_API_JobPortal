@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Problems;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
@@ -15,16 +16,14 @@ namespace APINguoiDung.Controllers
         public async Task<IActionResult> DangKy([FromBody] DangKyModel model)
         {
             var kq = await _business.DangKyAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return BadRequest(kq);
+            return this.KetQua(kq);
         }
 
         [HttpPost("dang-nhap")]
         public async Task<IActionResult> DangNhap([FromBody] DangNhapModel model)
         {
             var kq = await _business.DangNhapAsync(model);
-            if (kq.ThanhCong) return Ok(kq);
-            return Unauthorized(kq);
+            return this.KetQua(kq, 401);
         }
     }
 }
