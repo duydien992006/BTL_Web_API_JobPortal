@@ -1,5 +1,4 @@
-﻿// ============ APIGateway/Program.cs ============
-using APIGateway.Middleware;
+﻿using APIGateway.Middleware;
 using Common.Extensions;
 using Serilog;
 
@@ -15,14 +14,26 @@ try
     builder.AddJobPortalLogging("APIGateway");
     builder.Services.AddJobPortalErrorHandling();
 
+    string[] cacNguon = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new string[0];
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("WebFrontend", policy => policy
+            .WithOrigins(cacNguon)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            // Cho JavaScript đọc được traceId và tên file khi tải CV
+            .WithExposedHeaders("X-Correlation-Id", "Content-Disposition"));
+    });
+
     builder.Services.AddReverseProxy()
         .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
     var app = builder.Build();
 
-    app.UseJobPortalErrorHandling();                       // 1) correlation + log + bắt lỗi
-    app.UseMiddleware<JwtValidationMiddleware>();          // 2) kiểm tra JWT
-    app.MapReverseProxy();                                 // 3) chuyển tiếp
+    app.UseCors("WebFrontend");                            // 1) CORS đứng ĐẦU: trả lời preflight OPTIONS ngay
+    app.UseJobPortalErrorHandling();                       // 2) correlation + log + bắt lỗi
+    app.UseMiddleware<JwtValidationMiddleware>();          // 3) kiểm tra JWT
+    app.MapReverseProxy();                                 // 4) chuyển tiếp
 
     app.Run();
 }

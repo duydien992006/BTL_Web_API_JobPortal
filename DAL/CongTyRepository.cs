@@ -50,9 +50,11 @@ namespace DAL
             return await _dbHelper.QueryFirstOrDefaultAsync<CongTyModel>("sp_congty_layTheoId", new { Id = id });
         }
 
-        public async Task<IEnumerable<CongTyModel>> LayTatCaAsync()
+        public async Task<PhanTrangModel<CongTyModel>> LayTrangAsync(int trang, int kichThuoc)
         {
-            return await _dbHelper.QueryAsync<CongTyModel>("sp_congty_layTatCa");
+            var kq = await _dbHelper.QueryMultipleAsync<int, CongTyModel>("sp_congty_layTatCa",
+                new { Trang = trang, KichThuoc = kichThuoc });
+            return PhanTrangModel<CongTyModel>.Tao(kq.KetQua2, kq.KetQua1, trang, kichThuoc);
         }
 
         public async Task<bool> XoaAsync(int id)

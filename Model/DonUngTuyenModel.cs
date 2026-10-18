@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,13 +19,20 @@ namespace Model
 
     public class NopDonModel
     {
+        [Range(1, int.MaxValue, ErrorMessage = LoiValidate.IdHopLe)]
         public int TinTuyenDungId { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = LoiValidate.IdHopLe)]
         public int HoSoId { get; set; }
     }
 
     public class DoiTrangThaiDonModel
     {
+        [Range(1, int.MaxValue, ErrorMessage = LoiValidate.IdHopLe)]
         public int Id { get; set; }
+
+        [Required(ErrorMessage = LoiValidate.BatBuoc)]
+        [StringLength(30, ErrorMessage = LoiValidate.QuaDai)]
         public string TrangThaiMoi { get; set; }
     }
 }

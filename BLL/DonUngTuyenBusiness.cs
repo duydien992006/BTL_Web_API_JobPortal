@@ -135,17 +135,19 @@ namespace BLL
             return new PhanHoiModel { ThanhCong = false, ThongDiep = "Cập nhật thất bại" };
         }
 
-        public async Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId, NguoiDungHienTai nguoi)
+        public async Task<PhanTrangModel<DonTheoTinModel>> LayTheoTinAsync(int tinId, string trangThai, int trang, int kichThuoc, NguoiDungHienTai nguoi)
         {
             var tin = QuyenHelper.PhaiTonTai(await _soHuuRepo.LayThongTinTinAsync(tinId), "Không tìm thấy tin tuyển dụng");
             QuyenHelper.PhaiLaChuSoHuu(tin.NhaTuyenDungId, nguoi);
 
-            return await _repo.LayTheoTinAsync(tinId);
+            string loc = TrangThaiHopLe.ChuanHoa(trangThai, TrangThaiHopLe.Don);
+            return await _repo.LayTheoTinAsync(tinId, loc, PhanTrangHelper.Trang(trang), PhanTrangHelper.KichThuoc(kichThuoc));
         }
 
-        public async Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId)
+        public async Task<PhanTrangModel<DonUngTuyenCuaToiModel>> LayTheoUngVienAsync(int ungVienId, string trangThai, int trang, int kichThuoc)
         {
-            return await _repo.LayTheoUngVienAsync(ungVienId);
+            string loc = TrangThaiHopLe.ChuanHoa(trangThai, TrangThaiHopLe.Don);
+            return await _repo.LayTheoUngVienAsync(ungVienId, loc, PhanTrangHelper.Trang(trang), PhanTrangHelper.KichThuoc(kichThuoc));
         }
 
         // Chi tiết 1 đơn: thông tin đơn + toàn bộ lịch phỏng vấn + toàn bộ offer
@@ -161,8 +163,21 @@ namespace BLL
             {
                 Don = don,
                 LichPhongVan = (await _lichRepo.LayTheoDonUngTuyenAsync(id)).ToList(),
-                DeNghi = (await _deNghiRepo.LayTheoDonUngTuyenAsync(id)).ToList()
+                DeNghi = (await _deNghiRepo.LayTheoDonUngTuyenAsync(id)).ToList(),
+                LichSu = await _repo.LayLichSuAsync(id)
             };
+        }
+        public async Task<PhanHoiModel> RutDonAsync(int id, NguoiDungHienTai nguoi)
+        {
+            var don = QuyenHelper.PhaiTonTai(await _soHuuRepo.LayThongTinDonAsync(id), "Không tìm thấy đơn ứng tuyển");
+            QuyenHelper.PhaiLaChuSoHuu(don.UngVienId, nguoi);
+
+            // SP kiểm tra trạng thái, đơn đã có đề nghị hoặc đã kết thúc thì trả 409
+            bool ok = await _repo.RutAsync(id, nguoi.Id);
+            if (!ok) return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không rút được đơn" };
+
+            _logger.LogInformation("Ứng viên {UngVienId} rút đơn {DonUngTuyenId}", nguoi.Id, id);
+            return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã rút đơn ứng tuyển" };
         }
     }
 }

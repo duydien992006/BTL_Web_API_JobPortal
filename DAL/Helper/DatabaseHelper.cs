@@ -80,5 +80,15 @@ namespace DAL.Helper
             }
             return bang;
         }
+        public async Task<T> QueryMultipleAsync<T>(string spName, object param, Func<SqlMapper.GridReader, Task<T>> docKetQua)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var multi = await connection.QueryMultipleAsync(spName, param, commandType: CommandType.StoredProcedure))
+                {
+                    return await docKetQua(multi);
+                }
+            }
+        }
     }
 }

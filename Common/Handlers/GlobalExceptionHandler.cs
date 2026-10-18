@@ -109,6 +109,9 @@ namespace Common.Handlers
                     return (503, "Không kết nối được tới cơ sở dữ liệu", "DB_KHONG_KET_NOI");
                 case 50001: // THROW từ Stored Procedure khi vi phạm quy tắc trạng thái
                     return (409, sql.Message, "DB_VI_PHAM_QUY_TAC");
+
+                case 2628:
+                    return (400, "Dữ liệu nhập vào quá dài so với giới hạn cho phép", "DB_DU_LIEU_QUA_DAI");
                 default:
                     return (500, ThongDiepMacDinh, "DB_LOI_KHAC");
             }

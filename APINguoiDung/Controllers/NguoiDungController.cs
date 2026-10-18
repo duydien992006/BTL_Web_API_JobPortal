@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,13 @@ namespace APINguoiDung.Controllers
     public class NguoiDungController : ControllerBase
     {
         private readonly INguoiDungBusiness _business;
-        public NguoiDungController(INguoiDungBusiness business) { _business = business; }
+        private readonly IMatKhauBusiness _matKhauBusiness;
+
+        public NguoiDungController(INguoiDungBusiness business, IMatKhauBusiness matKhauBusiness)
+        {
+            _business = business;
+            _matKhauBusiness = matKhauBusiness;
+        }
 
         [HttpGet("thong-tin-ca-nhan")]
         public async Task<IActionResult> ThongTinCaNhan()
@@ -32,6 +39,13 @@ namespace APINguoiDung.Controllers
             model.Id = id;   // chỉ cho phép tự sửa thông tin của chính mình, không cho sửa người khác
             var kq = await _business.CapNhatAsync(model);
             return this.KetQua(kq, 404);
+        }
+
+        [HttpPut("doi-mat-khau")]
+        public async Task<IActionResult> DoiMatKhau([FromBody] DoiMatKhauModel model)
+        {
+            var kq = await _matKhauBusiness.DoiMatKhauAsync(User.LayNguoiDungHienTai().Id, model);
+            return this.KetQua(kq);
         }
     }
 }

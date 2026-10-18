@@ -15,9 +15,9 @@ namespace DAL.Interfaces
         Task<bool> DongAsync(int id);
         Task<bool> XoaAsync(int id);
         Task<TinTuyenDungModel> LayChiTietAsync(int id);
-        Task<IEnumerable<TinTuyenDungModel>> TimKiemAsync(TimKiemTinModel model);
-        Task<IEnumerable<TinTuyenDungModel>> GoiYAsync(List<int> danhSachKyNangUngVien);
-        Task<IEnumerable<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId);
+        Task<PhanTrangModel<TinTimKiemModel>> TimKiemAsync(TimKiemTinModel model);
+        Task<IEnumerable<TinGoiYModel>> GoiYAsync(int ungVienId, List<int> danhSachKyNangUngVien);
+        Task<PhanTrangModel<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId, string trangThai, int trang, int kichThuoc);
         Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync();
     }
 }

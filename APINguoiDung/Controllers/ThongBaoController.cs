@@ -15,12 +15,9 @@ namespace APINguoiDung.Controllers
         public ThongBaoController(IThongBaoBusiness business) { _business = business; }
 
         [HttpGet]
-        public async Task<IActionResult> LayCuaToi()
+        public async Task<IActionResult> LayCuaToi([FromQuery] int trang = 1, [FromQuery] int kichThuoc = 10)
         {
-            var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
-            int nguoiDungId = claim != null ? int.Parse(claim.Value) : 0;
-            var ds = await _business.LayTheoNguoiDungAsync(nguoiDungId);
-            return Ok(ds);
+            return Ok(await _business.LayTheoNguoiDungAsync(User.LayNguoiDungHienTai().Id, trang, kichThuoc));
         }
 
         [HttpPut("{id:int}/da-doc")]

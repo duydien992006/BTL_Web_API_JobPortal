@@ -71,26 +71,36 @@ namespace DAL
             return ketQua.KetQua1;
         }
 
-        public async Task<IEnumerable<TinTuyenDungModel>> TimKiemAsync(TimKiemTinModel model)
+        public async Task<PhanTrangModel<TinTimKiemModel>> TimKiemAsync(TimKiemTinModel model)
         {
             var bangKyNang = _dbHelper.TaoBangId(model.DanhSachKyNangId);
+
             var thamSo = new DynamicParameters();
-            thamSo.Add("TuKhoa", model.TuKhoa);
-            thamSo.Add("DiaDiem", model.DiaDiem);
+            thamSo.Add("TuKhoa", string.IsNullOrWhiteSpace(model.TuKhoa) ? null : model.TuKhoa.Trim());
+            thamSo.Add("DiaDiem", string.IsNullOrWhiteSpace(model.DiaDiem) ? null : model.DiaDiem.Trim());
+            thamSo.Add("LuongToiThieu", model.LuongToiThieu);
+            thamSo.Add("Trang", model.Trang);
+            thamSo.Add("KichThuoc", model.KichThuoc);
             thamSo.Add("DanhSachKyNang", bangKyNang.AsTableValuedParameter("DanhSachIntType"));
-            return await _dbHelper.QueryAsync<TinTuyenDungModel>("sp_tintuyendung_timKiem", thamSo);
+
+            // Tập 1 = tổng số bản ghi (1 số nguyên), tập 2 = các bản ghi của trang
+            var kq = await _dbHelper.QueryMultipleAsync<int, TinTimKiemModel>("sp_tintuyendung_timKiem", thamSo);
+            return PhanTrangModel<TinTimKiemModel>.Tao(kq.KetQua2, kq.KetQua1, model.Trang, model.KichThuoc);
         }
 
-        public async Task<IEnumerable<TinTuyenDungModel>> GoiYAsync(List<int> danhSachKyNangUngVien)
+        public async Task<IEnumerable<TinGoiYModel>> GoiYAsync(int ungVienId, List<int> danhSachKyNangUngVien)
         {
             var bangKyNang = _dbHelper.TaoBangId(danhSachKyNangUngVien);
             var thamSo = new DynamicParameters();
+            thamSo.Add("UngVienId", ungVienId);
             thamSo.Add("DanhSachKyNangUngVien", bangKyNang.AsTableValuedParameter("DanhSachIntType"));
-            return await _dbHelper.QueryAsync<TinTuyenDungModel>("sp_tintuyendung_goiY", thamSo);
+            return await _dbHelper.QueryAsync<TinGoiYModel>("sp_tintuyendung_goiY", thamSo);
         }
-        public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId)
+        public async Task<PhanTrangModel<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId, string trangThai, int trang, int kichThuoc)
         {
-            return await _dbHelper.QueryAsync<TinTuyenDungTomTatModel>("sp_tintuyendung_layTheoNhaTuyenDung", new { NhaTuyenDungId = nhaTuyenDungId });
+            var kq = await _dbHelper.QueryMultipleAsync<int, TinTuyenDungTomTatModel>("sp_tintuyendung_layTheoNhaTuyenDung",
+                new { NhaTuyenDungId = nhaTuyenDungId, TrangThai = trangThai, Trang = trang, KichThuoc = kichThuoc });
+            return PhanTrangModel<TinTuyenDungTomTatModel>.Tao(kq.KetQua2, kq.KetQua1, trang, kichThuoc);
         }
 
         public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync()

@@ -15,9 +15,9 @@ namespace BLL.Interfaces
         Task<PhanHoiModel> DongAsync(int id, NguoiDungHienTai nguoi);
         Task<PhanHoiModel> XoaAsync(int id, NguoiDungHienTai nguoi);
         Task<TinTuyenDungModel> LayChiTietAsync(int id, NguoiDungHienTai nguoi);   // nguoi = null nếu chưa đăng nhập
-        Task<IEnumerable<TinTuyenDungModel>> TimKiemAsync(TimKiemTinModel model);
-        Task<IEnumerable<TinTuyenDungModel>> GoiYAsync(int ungVienId);
-        Task<IEnumerable<TinTuyenDungTomTatModel>> LayCuaToiAsync(int nhaTuyenDungId);
+        Task<PhanTrangModel<TinTimKiemModel>> TimKiemAsync(TimKiemTinModel model);
+        Task<IEnumerable<TinGoiYModel>> GoiYAsync(int ungVienId);
+        Task<PhanTrangModel<TinTuyenDungTomTatModel>> LayCuaToiAsync(int nhaTuyenDungId, string trangThai, int trang, int kichThuoc);
         Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync();
 
     }

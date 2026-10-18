@@ -42,6 +42,13 @@ namespace BLL
 
             services.AddScoped<ISoHuuRepository, SoHuuRepository>();
 
+            services.AddMemoryCache();
+            services.AddScoped<ITaiKhoanKhoaService, TaiKhoanKhoaService>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IMatKhauBusiness, MatKhauBusiness>();
+            services.AddScoped<IMauCVRepository, MauCVRepository>();
+            services.AddScoped<IMauCVBusiness, MauCVBusiness>();
+
             return services;
         }
     }

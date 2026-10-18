@@ -24,9 +24,9 @@ namespace APINhaTuyenDung.Controllers
 
         [HttpGet("theo-tin/{tinId:int}")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> LayTheoTin(int tinId)
+        public async Task<IActionResult> LayTheoTin(int tinId, [FromQuery] string trangThai = null, [FromQuery] int trang = 1, [FromQuery] int kichThuoc = 10)
         {
-            return Ok(await _business.LayTheoTinAsync(tinId, User.LayNguoiDungHienTai()));
+            return Ok(await _business.LayTheoTinAsync(tinId, trangThai, trang, kichThuoc, User.LayNguoiDungHienTai()));
         }
     }
 }

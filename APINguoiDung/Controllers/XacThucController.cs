@@ -10,20 +10,37 @@ namespace APINguoiDung.Controllers
     public class XacThucController : ControllerBase
     {
         private readonly INguoiDungBusiness _business;
-        public XacThucController(INguoiDungBusiness business) { _business = business; }
+        private readonly IMatKhauBusiness _matKhauBusiness;
+
+        // CHỈ ĐƯỢC CÓ 1 CONSTRUCTOR PUBLIC
+        public XacThucController(INguoiDungBusiness business, IMatKhauBusiness matKhauBusiness)
+        {
+            _business = business;
+            _matKhauBusiness = matKhauBusiness;
+        }
 
         [HttpPost("dang-ky")]
         public async Task<IActionResult> DangKy([FromBody] DangKyModel model)
         {
-            var kq = await _business.DangKyAsync(model);
-            return this.KetQua(kq);
+            return this.KetQua(await _business.DangKyAsync(model));
         }
 
         [HttpPost("dang-nhap")]
         public async Task<IActionResult> DangNhap([FromBody] DangNhapModel model)
         {
-            var kq = await _business.DangNhapAsync(model);
-            return this.KetQua(kq, 401);
+            return this.KetQua(await _business.DangNhapAsync(model), 401);
+        }
+
+        [HttpPost("quen-mat-khau")]
+        public async Task<IActionResult> QuenMatKhau([FromBody] QuenMatKhauModel model)
+        {
+            return this.KetQua(await _matKhauBusiness.QuenMatKhauAsync(model));
+        }
+
+        [HttpPost("dat-lai-mat-khau")]
+        public async Task<IActionResult> DatLaiMatKhau([FromBody] DatLaiMatKhauModel model)
+        {
+            return this.KetQua(await _matKhauBusiness.DatLaiMatKhauAsync(model));
         }
     }
 }

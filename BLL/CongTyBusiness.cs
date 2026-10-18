@@ -58,7 +58,10 @@ namespace BLL
         }
 
         public async Task<CongTyModel> LayTheoIdAsync(int id) { return await _repo.LayTheoIdAsync(id); }
-        public async Task<IEnumerable<CongTyModel>> LayTatCaAsync() { return await _repo.LayTatCaAsync(); }
+        public async Task<PhanTrangModel<CongTyModel>> LayTatCaAsync(int trang, int kichThuoc)
+        {
+            return await _repo.LayTrangAsync(PhanTrangHelper.Trang(trang), PhanTrangHelper.KichThuoc(kichThuoc));
+        }
         public async Task<IEnumerable<CongTyModel>> LayCuaToiAsync(int nguoiDungId)
         {
             return await _repo.LayTheoNguoiDaiDienAsync(nguoiDungId);

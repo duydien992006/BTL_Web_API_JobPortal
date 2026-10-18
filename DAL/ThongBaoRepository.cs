@@ -19,9 +19,20 @@ namespace DAL
             return await _dbHelper.ExecuteScalarAsync<int>("sp_thongbao_tao", new { NguoiDungId = nguoiDungId, NoiDung = noiDung });
         }
 
-        public async Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId)
+        public async Task<PhanTrangThongBaoModel> LayTheoNguoiDungAsync(int nguoiDungId, int trang, int kichThuoc)
         {
-            return await _dbHelper.QueryAsync<ThongBaoModel>("sp_thongbao_layTheoNguoiDung", new { NguoiDungId = nguoiDungId });
+            var kq = await _dbHelper.QueryMultipleAsync<TongThongBaoModel, ThongBaoModel>(
+                "sp_thongbao_layTheoNguoiDung",
+                new { NguoiDungId = nguoiDungId, Trang = trang, KichThuoc = kichThuoc });
+
+            return new PhanTrangThongBaoModel
+            {
+                DanhSach = kq.KetQua2,
+                TongSo = kq.KetQua1 == null ? 0 : kq.KetQua1.TongSo,
+                SoChuaDoc = kq.KetQua1 == null ? 0 : kq.KetQua1.SoChuaDoc,
+                Trang = trang,
+                KichThuoc = kichThuoc
+            };
         }
 
         public async Task<bool> DanhDauDaDocAsync(int id, int nguoiDungId)

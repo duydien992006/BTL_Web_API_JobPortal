@@ -10,5 +10,7 @@ namespace BLL.Interfaces
     public interface IBaoCaoBusiness
     {
         Task<BaoCaoTongQuanModel> LayTongQuanAsync();
+        Task<PipelineAdminModel> LayPipelineAsync();
+        Task<DashboardNhaTuyenDungModel> LayDashboardNhaTuyenDungAsync(int nhaTuyenDungId);
     }
 }

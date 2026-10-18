@@ -18,5 +18,11 @@ namespace APIQuanTriVien.Controllers
             var bc = await _business.LayTongQuanAsync();
             return Ok(bc);
         }
+
+        [HttpGet("pipeline")]
+        public async Task<IActionResult> Pipeline()
+        {
+            return Ok(await _business.LayPipelineAsync());
+        }
     }
 }

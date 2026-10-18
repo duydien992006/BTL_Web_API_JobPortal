@@ -10,7 +10,7 @@ namespace DAL.Interfaces
     public interface IThongBaoRepository
     {
         Task<int> TaoAsync(int nguoiDungId, string noiDung);
-        Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId);
+        Task<PhanTrangThongBaoModel> LayTheoNguoiDungAsync(int nguoiDungId, int trang, int kichThuoc);
         Task<bool> DanhDauDaDocAsync(int id, int nguoiDungId);
     }
 }

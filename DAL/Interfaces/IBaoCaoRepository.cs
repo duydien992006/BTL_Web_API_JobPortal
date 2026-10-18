@@ -10,5 +10,7 @@ namespace DAL.Interfaces
     public interface IBaoCaoRepository
     {
         Task<BaoCaoTongQuanModel> LayTongQuanAsync();
+        Task<PipelineAdminModel> LayPipelineAdminAsync();
+        Task<DashboardNhaTuyenDungModel> LayDashboardNhaTuyenDungAsync(int nhaTuyenDungId);
     }
 }

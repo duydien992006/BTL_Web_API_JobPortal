@@ -10,7 +10,7 @@ namespace BLL.Interfaces
     public interface IThongBaoBusiness
     {
         Task TaoAsync(int nguoiDungId, string noiDung);
-        Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId);
+        Task<PhanTrangThongBaoModel> LayTheoNguoiDungAsync(int nguoiDungId, int trang, int kichThuoc);
         Task<PhanHoiModel> DanhDauDaDocAsync(int id, int nguoiDungId);
     }
 }

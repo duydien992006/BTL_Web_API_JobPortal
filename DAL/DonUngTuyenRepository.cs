@@ -38,18 +38,33 @@ namespace DAL
             return await _dbHelper.QueryFirstOrDefaultAsync<DonUngTuyenModel>("sp_donungtuyen_layTheoId", new { Id = id });
         }
 
-        public async Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId)
+        public async Task<PhanTrangModel<DonTheoTinModel>> LayTheoTinAsync(int tinId, string trangThai, int trang, int kichThuoc)
         {
-            return await _dbHelper.QueryAsync<dynamic>("sp_donungtuyen_layTheoTin", new { TinTuyenDungId = tinId });
+            var kq = await _dbHelper.QueryMultipleAsync<int, DonTheoTinModel>("sp_donungtuyen_layTheoTin",
+                new { TinTuyenDungId = tinId, TrangThai = trangThai, Trang = trang, KichThuoc = kichThuoc });
+            return PhanTrangModel<DonTheoTinModel>.Tao(kq.KetQua2, kq.KetQua1, trang, kichThuoc);
         }
 
-        public async Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId)
+        public async Task<PhanTrangModel<DonUngTuyenCuaToiModel>> LayTheoUngVienAsync(int ungVienId, string trangThai, int trang, int kichThuoc)
         {
-            return await _dbHelper.QueryAsync<dynamic>("sp_donungtuyen_layTheoUngVien", new { UngVienId = ungVienId });
+            var kq = await _dbHelper.QueryMultipleAsync<int, DonUngTuyenCuaToiModel>("sp_donungtuyen_layTheoUngVien",
+                new { UngVienId = ungVienId, TrangThai = trangThai, Trang = trang, KichThuoc = kichThuoc });
+            return PhanTrangModel<DonUngTuyenCuaToiModel>.Tao(kq.KetQua2, kq.KetQua1, trang, kichThuoc);
         }
         public async Task<DonUngTuyenChiTietModel> LayChiTietAsync(int id)
         {
             return await _dbHelper.QueryFirstOrDefaultAsync<DonUngTuyenChiTietModel>("sp_donungtuyen_chiTiet", new { Id = id });
+        }
+        public async Task<bool> RutAsync(int id, int ungVienId)
+        {
+            int soDong = await _dbHelper.ExecuteAsync("sp_donungtuyen_rut", new { Id = id, UngVienId = ungVienId });
+            return soDong > 0;
+        }
+
+        public async Task<List<LichSuTrangThaiModel>> LayLichSuAsync(int donUngTuyenId)
+        {
+            var ds = await _dbHelper.QueryAsync<LichSuTrangThaiModel>("sp_donungtuyen_layLichSu", new { DonUngTuyenId = donUngTuyenId });
+            return ds.ToList();
         }
     }
 }

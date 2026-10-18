@@ -16,9 +16,10 @@ namespace BLL
 
         public async Task TaoAsync(int nguoiDungId, string noiDung) { await _repo.TaoAsync(nguoiDungId, noiDung); }
 
-        public async Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId)
+        public async Task<PhanTrangThongBaoModel> LayTheoNguoiDungAsync(int nguoiDungId, int trang, int kichThuoc)
         {
-            return await _repo.LayTheoNguoiDungAsync(nguoiDungId);
+            return await _repo.LayTheoNguoiDungAsync(nguoiDungId,
+                PhanTrangHelper.Trang(trang), PhanTrangHelper.KichThuoc(kichThuoc));
         }
 
         public async Task<PhanHoiModel> DanhDauDaDocAsync(int id, int nguoiDungId)

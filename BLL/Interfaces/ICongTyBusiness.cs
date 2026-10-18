@@ -14,7 +14,7 @@ namespace BLL.Interfaces
         Task<PhanHoiModel> XacMinhAsync(int id, bool daXacMinh);
         Task<PhanHoiModel> XoaAsync(int id, NguoiDungHienTai nguoi);
         Task<CongTyModel> LayTheoIdAsync(int id);
-        Task<IEnumerable<CongTyModel>> LayTatCaAsync();
+        Task<PhanTrangModel<CongTyModel>> LayTatCaAsync(int trang, int kichThuoc);
         Task<IEnumerable<CongTyModel>> LayCuaToiAsync(int nguoiDungId);
         Task<IEnumerable<CongTyModel>> LayChoXacMinhAsync();
     }

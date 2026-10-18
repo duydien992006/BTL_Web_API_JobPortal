@@ -56,9 +56,9 @@ namespace APINhaTuyenDung.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LayTatCa()
+        public async Task<IActionResult> LayTatCa([FromQuery] int trang = 1, [FromQuery] int kichThuoc = 10)
         {
-            return Ok(await _business.LayTatCaAsync());
+            return Ok(await _business.LayTatCaAsync(trang, kichThuoc));
         }
         [HttpGet("cua-toi")]
         [Authorize(Roles = "NhaTuyenDung")]

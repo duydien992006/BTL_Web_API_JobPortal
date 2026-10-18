@@ -1,5 +1,6 @@
 ﻿// ============ Program.cs (4 project API) ============
 using BLL;
+using BLL.Interfaces;
 using Common.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,7 @@ try
 
     builder.AddJobPortalLogging("APIUngVien");          // <-- ĐỔI TÊN THEO TỪNG PROJECT
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddJobPortalMvc();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
@@ -42,6 +43,20 @@ try
             ValidateIssuer = false,
             ValidateAudience = false,
             ClockSkew = TimeSpan.Zero
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                string idClaim = context.Principal?.FindFirst("Id")?.Value;
+                int nguoiDungId;
+                if (int.TryParse(idClaim, out nguoiDungId))
+                {
+                    var dichVu = context.HttpContext.RequestServices.GetRequiredService<ITaiKhoanKhoaService>();
+                    if (await dichVu.BiKhoaAsync(nguoiDungId))
+                        context.Fail("Tài khoản đã bị khóa");
+                }
+            }
         };
     });
     builder.Services.AddAuthorization();

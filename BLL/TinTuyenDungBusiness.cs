@@ -104,25 +104,30 @@ namespace BLL
             return await _repo.LayChiTietAsync(id);
         }
 
-        public async Task<IEnumerable<TinTuyenDungModel>> TimKiemAsync(TimKiemTinModel model)
+        // TinTuyenDungBusiness.cs: thay 2 hàm
+        public async Task<PhanTrangModel<TinTimKiemModel>> TimKiemAsync(TimKiemTinModel model)
         {
+            model.Trang = PhanTrangHelper.Trang(model.Trang);
+            model.KichThuoc = PhanTrangHelper.KichThuoc(model.KichThuoc);
             return await _repo.TimKiemAsync(model);
         }
 
-        public async Task<IEnumerable<TinTuyenDungModel>> GoiYAsync(int ungVienId)
+        public async Task<IEnumerable<TinGoiYModel>> GoiYAsync(int ungVienId)
         {
             int hoSoId = await _hoSoRepo.LayIdMoiNhatAsync(ungVienId);
-            if (hoSoId == 0) return Enumerable.Empty<TinTuyenDungModel>();
+            if (hoSoId == 0) return Enumerable.Empty<TinGoiYModel>();
 
             var hoSo = await _hoSoRepo.LayChiTietAsync(hoSoId);
-            if (hoSo == null || hoSo.DanhSachKyNang.Count == 0) return Enumerable.Empty<TinTuyenDungModel>();
+            if (hoSo == null || hoSo.DanhSachKyNang.Count == 0) return Enumerable.Empty<TinGoiYModel>();
 
             var kyNangIds = hoSo.DanhSachKyNang.Select(k => k.Id).ToList();
-            return await _repo.GoiYAsync(kyNangIds);
+            return await _repo.GoiYAsync(ungVienId, kyNangIds);
         }
-        public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayCuaToiAsync(int nhaTuyenDungId)
+        public async Task<PhanTrangModel<TinTuyenDungTomTatModel>> LayCuaToiAsync(int nhaTuyenDungId, string trangThai, int trang, int kichThuoc)
         {
-            return await _repo.LayTheoNhaTuyenDungAsync(nhaTuyenDungId);
+            string loc = TrangThaiHopLe.ChuanHoa(trangThai, TrangThaiHopLe.Tin);
+            return await _repo.LayTheoNhaTuyenDungAsync(nhaTuyenDungId, loc,
+                PhanTrangHelper.Trang(trang), PhanTrangHelper.KichThuoc(kichThuoc));
         }
 
         public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync()

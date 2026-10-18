@@ -76,11 +76,12 @@ namespace APINhaTuyenDung.Controllers
             var ds = await _business.GoiYAsync(User.LayNguoiDungHienTai().Id);
             return Ok(ds);
         }
+
         [HttpGet("cua-toi")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> CuaToi()
+        public async Task<IActionResult> CuaToi([FromQuery] string trangThai = null, [FromQuery] int trang = 1, [FromQuery] int kichThuoc = 10)
         {
-            return Ok(await _business.LayCuaToiAsync(User.LayNguoiDungHienTai().Id));
+            return Ok(await _business.LayCuaToiAsync(User.LayNguoiDungHienTai().Id, trangThai, trang, kichThuoc));
         }
 
         [HttpGet("cho-duyet")]

@@ -11,8 +11,10 @@ namespace BLL.Interfaces
     {
         Task<PhanHoiModel> NopDonAsync(NopDonModel model, int ungVienId);
         Task<PhanHoiModel> DoiTrangThaiAsync(DoiTrangThaiDonModel model, NguoiDungHienTai nguoi);
-        Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId, NguoiDungHienTai nguoi);
-        Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId);
+        Task<PhanTrangModel<DonTheoTinModel>> LayTheoTinAsync(int tinId, string trangThai, int trang, int kichThuoc, NguoiDungHienTai nguoi);
+        Task<PhanTrangModel<DonUngTuyenCuaToiModel>> LayTheoUngVienAsync(int ungVienId, string trangThai, int trang, int kichThuoc);
+
         Task<ChiTietDonUngTuyenModel> LayChiTietAsync(int id, NguoiDungHienTai nguoi);
+        Task<PhanHoiModel> RutDonAsync(int id, NguoiDungHienTai nguoi);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace DAL.Helper.Interfaces
         Task<T> ExecuteScalarAsync<T>(string spName, object param = null);
         Task<KetQuaKep<T1, T2>> QueryMultipleAsync<T1, T2>(string spName, object param = null);
         DataTable TaoBangId(IEnumerable<int> danhSachId);
+        Task<T> QueryMultipleAsync<T>(string spName, object param, Func<SqlMapper.GridReader, Task<T>> docKetQua);
     }
 
     public class KetQuaKep<T1, T2>

@@ -13,8 +13,10 @@ namespace DAL.Interfaces
         Task<int> NopDonAsync(int tinId, int hoSoId, int ungVienId);
         Task<bool> DoiTrangThaiAsync(int id, string trangThai);
         Task<DonUngTuyenModel> LayTheoIdAsync(int id);
-        Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId);
-        Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId);
+        Task<PhanTrangModel<DonTheoTinModel>> LayTheoTinAsync(int tinId, string trangThai, int trang, int kichThuoc);
+        Task<PhanTrangModel<DonUngTuyenCuaToiModel>> LayTheoUngVienAsync(int ungVienId, string trangThai, int trang, int kichThuoc);
         Task<DonUngTuyenChiTietModel> LayChiTietAsync(int id);
+        Task<bool> RutAsync(int id, int ungVienId);
+        Task<List<LichSuTrangThaiModel>> LayLichSuAsync(int donUngTuyenId);
     }
 }
