@@ -11,6 +11,6 @@ namespace DAL.Interfaces
     {
         Task<int> TaoAsync(int nguoiDungId, string noiDung);
         Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId);
-        Task<bool> DanhDauDaDocAsync(int id);
+        Task<bool> DanhDauDaDocAsync(int id, int nguoiDungId);
     }
 }

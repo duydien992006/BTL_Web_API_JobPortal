@@ -34,5 +34,9 @@ namespace DAL
         {
             return await _dbHelper.QueryAsync<LichPhongVanModel>("sp_lichphongvan_layTheoDonUngTuyen", new { DonUngTuyenId = donUngTuyenId });
         }
+        public async Task<IEnumerable<LichPhongVanCuaToiModel>> LayCuaToiAsync(int nguoiDungId, string vaiTro)
+        {
+            return await _dbHelper.QueryAsync<LichPhongVanCuaToiModel>("sp_lichphongvan_layCuaToi", new { NguoiDungId = nguoiDungId, VaiTro = vaiTro });
+        }
     }
 }

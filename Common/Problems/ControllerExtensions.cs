@@ -9,8 +9,7 @@ namespace Common.Problems
 {
     public static class ControllerExtensions
     {
-        // Thành công  -> 200 + PhanHoiModel (như cũ)
-        // Thất bại    -> ProblemDetails, "detail" là ThongDiep của Business
+
         public static IActionResult KetQua(this ControllerBase controller, PhanHoiModel kq, int maLoiHttp = 400)
         {
             if (kq.ThanhCong) return controller.Ok(kq);

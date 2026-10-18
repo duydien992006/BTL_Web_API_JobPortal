@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace APIUngVien.Controllers
         [Authorize(Roles = "UngVien")]
         public async Task<IActionResult> PhanHoi(int id, [FromQuery] bool chapNhan)
         {
-            var kq = await _business.PhanHoiAsync(id, chapNhan);
+            var kq = await _business.PhanHoiAsync(id, chapNhan, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
@@ -24,8 +25,7 @@ namespace APIUngVien.Controllers
         [Authorize]
         public async Task<IActionResult> LayTheoDon(int donUngTuyenId)
         {
-            var ds = await _business.LayTheoDonUngTuyenAsync(donUngTuyenId);
-            return Ok(ds);
+            return Ok(await _business.LayTheoDonUngTuyenAsync(donUngTuyenId, User.LayNguoiDungHienTai()));
         }
     }
 }

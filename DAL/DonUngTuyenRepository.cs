@@ -47,5 +47,9 @@ namespace DAL
         {
             return await _dbHelper.QueryAsync<dynamic>("sp_donungtuyen_layTheoUngVien", new { UngVienId = ungVienId });
         }
+        public async Task<DonUngTuyenChiTietModel> LayChiTietAsync(int id)
+        {
+            return await _dbHelper.QueryFirstOrDefaultAsync<DonUngTuyenChiTietModel>("sp_donungtuyen_chiTiet", new { Id = id });
+        }
     }
 }

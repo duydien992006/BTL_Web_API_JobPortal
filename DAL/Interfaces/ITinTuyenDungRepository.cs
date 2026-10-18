@@ -17,5 +17,7 @@ namespace DAL.Interfaces
         Task<TinTuyenDungModel> LayChiTietAsync(int id);
         Task<IEnumerable<TinTuyenDungModel>> TimKiemAsync(TimKiemTinModel model);
         Task<IEnumerable<TinTuyenDungModel>> GoiYAsync(List<int> danhSachKyNangUngVien);
+        Task<IEnumerable<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId);
+        Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync();
     }
 }

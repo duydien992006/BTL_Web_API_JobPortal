@@ -9,11 +9,13 @@ namespace BLL.Interfaces
 {
     public interface ICongTyBusiness
     {
-        Task<PhanHoiModel> TaoAsync(CongTyModel model);
-        Task<PhanHoiModel> CapNhatAsync(CongTyModel model);
+        Task<PhanHoiModel> TaoAsync(CongTyModel model, NguoiDungHienTai nguoi);
+        Task<PhanHoiModel> CapNhatAsync(CongTyModel model, NguoiDungHienTai nguoi);
         Task<PhanHoiModel> XacMinhAsync(int id, bool daXacMinh);
-        Task<PhanHoiModel> XoaAsync(int id);   // MỚI THÊM
+        Task<PhanHoiModel> XoaAsync(int id, NguoiDungHienTai nguoi);
         Task<CongTyModel> LayTheoIdAsync(int id);
         Task<IEnumerable<CongTyModel>> LayTatCaAsync();
+        Task<IEnumerable<CongTyModel>> LayCuaToiAsync(int nguoiDungId);
+        Task<IEnumerable<CongTyModel>> LayChoXacMinhAsync();
     }
 }

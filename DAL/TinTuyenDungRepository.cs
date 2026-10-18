@@ -88,5 +88,14 @@ namespace DAL
             thamSo.Add("DanhSachKyNangUngVien", bangKyNang.AsTableValuedParameter("DanhSachIntType"));
             return await _dbHelper.QueryAsync<TinTuyenDungModel>("sp_tintuyendung_goiY", thamSo);
         }
+        public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayTheoNhaTuyenDungAsync(int nhaTuyenDungId)
+        {
+            return await _dbHelper.QueryAsync<TinTuyenDungTomTatModel>("sp_tintuyendung_layTheoNhaTuyenDung", new { NhaTuyenDungId = nhaTuyenDungId });
+        }
+
+        public async Task<IEnumerable<TinTuyenDungTomTatModel>> LayChoDuyetAsync()
+        {
+            return await _dbHelper.QueryAsync<TinTuyenDungTomTatModel>("sp_tintuyendung_layChoDuyet");
+        }
     }
 }

@@ -24,9 +24,9 @@ namespace DAL
             return await _dbHelper.QueryAsync<ThongBaoModel>("sp_thongbao_layTheoNguoiDung", new { NguoiDungId = nguoiDungId });
         }
 
-        public async Task<bool> DanhDauDaDocAsync(int id)
+        public async Task<bool> DanhDauDaDocAsync(int id, int nguoiDungId)
         {
-            int soDong = await _dbHelper.ExecuteAsync("sp_thongbao_danhDauDaDoc", new { Id = id });
+            int soDong = await _dbHelper.ExecuteAsync("sp_thongbao_danhDauDaDoc", new { Id = id, NguoiDungId = nguoiDungId });
             return soDong > 0;
         }
     }

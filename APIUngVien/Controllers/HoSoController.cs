@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,9 +32,8 @@ namespace APIUngVien.Controllers
         [Authorize]
         public async Task<IActionResult> LayChiTiet(int id)
         {
-            var hoSo = await _business.LayChiTietAsync(id);
-            if (hoSo == null) return NotFound();
-            return Ok(hoSo);
+            var hoSo = await _business.LayChiTietAsync(id, User.LayNguoiDungHienTai());
+            return Ok(hoSo);   // không tìm thấy/không có quyền -> Business đã throw 404/403
         }
 
         [HttpGet("cua-toi")]
@@ -55,6 +55,14 @@ namespace APIUngVien.Controllers
             var kq = await _business.XoaAsync(id, ungVienId);
             if (kq.ThanhCong) return Ok(kq);
             return BadRequest(kq);
+        }
+
+        [HttpGet("{id:int}/tai-ve")]
+        [Authorize]
+        public async Task<IActionResult> TaiVe(int id)
+        {
+            var file = await _business.LayFileTaiVeAsync(id, User.LayNguoiDungHienTai());
+            return PhysicalFile(file.DuongDanVatLy, file.ContentType, file.TenFileGoc);
         }
     }
 }

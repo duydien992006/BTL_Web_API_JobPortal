@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,7 @@ namespace APIUngVien.Controllers
         [Authorize(Roles = "UngVien")]
         public async Task<IActionResult> NopDon([FromBody] NopDonModel model)
         {
-            var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
-            int ungVienId = claim != null ? int.Parse(claim.Value) : 0;
-            var kq = await _business.NopDonAsync(model, ungVienId);
+            var kq = await _business.NopDonAsync(model, User.LayNguoiDungHienTai().Id);
             return this.KetQua(kq);
         }
 
@@ -27,10 +26,14 @@ namespace APIUngVien.Controllers
         [Authorize(Roles = "UngVien")]
         public async Task<IActionResult> DonCuaToi()
         {
-            var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
-            int ungVienId = claim != null ? int.Parse(claim.Value) : 0;
-            var ds = await _business.LayTheoUngVienAsync(ungVienId);
-            return Ok(ds);
+            return Ok(await _business.LayTheoUngVienAsync(User.LayNguoiDungHienTai().Id));
+        }
+
+        [HttpGet("chi-tiet/{id:int}")]
+        [Authorize]
+        public async Task<IActionResult> ChiTiet(int id)
+        {
+            return Ok(await _business.LayChiTietAsync(id, User.LayNguoiDungHienTai()));
         }
     }
 }

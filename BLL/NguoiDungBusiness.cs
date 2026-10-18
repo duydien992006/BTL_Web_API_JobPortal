@@ -19,6 +19,7 @@ namespace BLL
         private readonly INguoiDungRepository _repo;
         private readonly IConfiguration _configuration;
         private readonly ILogger<NguoiDungBusiness> _logger;
+        private static readonly string[] VaiTroDuocTuDangKy = { "UngVien", "NhaTuyenDung" };
         public NguoiDungBusiness(INguoiDungRepository repo, IConfiguration configuration, ILogger<NguoiDungBusiness> logger)
         {
             _repo = repo;
@@ -28,6 +29,9 @@ namespace BLL
 
         public async Task<PhanHoiModel> DangKyAsync(DangKyModel model)
         {
+            if (!VaiTroDuocTuDangKy.Contains(model.VaiTro))
+                return new PhanHoiModel { ThanhCong = false, ThongDiep = "Vai trò không hợp lệ, chỉ được đăng ký UngVien hoặc NhaTuyenDung" };
+
             if (string.IsNullOrEmpty(model.Email) || !model.Email.Contains("@"))
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Email không hợp lệ" };
 

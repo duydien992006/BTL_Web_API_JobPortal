@@ -11,6 +11,6 @@ namespace BLL.Interfaces
     {
         Task TaoAsync(int nguoiDungId, string noiDung);
         Task<IEnumerable<ThongBaoModel>> LayTheoNguoiDungAsync(int nguoiDungId);
-        Task<PhanHoiModel> DanhDauDaDocAsync(int id);
+        Task<PhanHoiModel> DanhDauDaDocAsync(int id, int nguoiDungId);
     }
 }

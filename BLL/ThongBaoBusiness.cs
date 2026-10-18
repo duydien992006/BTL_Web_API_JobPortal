@@ -21,9 +21,9 @@ namespace BLL
             return await _repo.LayTheoNguoiDungAsync(nguoiDungId);
         }
 
-        public async Task<PhanHoiModel> DanhDauDaDocAsync(int id)
+        public async Task<PhanHoiModel> DanhDauDaDocAsync(int id, int nguoiDungId)
         {
-            bool ok = await _repo.DanhDauDaDocAsync(id);
+            bool ok = await _repo.DanhDauDaDocAsync(id, nguoiDungId);
             if (ok) return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã đánh dấu đã đọc" };
             return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không tìm thấy thông báo" };
         }

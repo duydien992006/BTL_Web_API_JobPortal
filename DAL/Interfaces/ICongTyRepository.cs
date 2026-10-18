@@ -15,5 +15,8 @@ namespace DAL.Interfaces
         Task<CongTyModel> LayTheoIdAsync(int id);
         Task<IEnumerable<CongTyModel>> LayTatCaAsync();
         Task<bool> XoaAsync(int id);
+        Task<IEnumerable<CongTyModel>> LayTheoNguoiDaiDienAsync(int nguoiDaiDienId);
+        Task<IEnumerable<CongTyModel>> LayChoXacMinhAsync();
+
     }
 }

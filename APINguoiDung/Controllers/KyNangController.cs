@@ -1,5 +1,6 @@
 ﻿using BLL.Interfaces;
 using Common.Problems;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
@@ -13,6 +14,7 @@ namespace APINguoiDung.Controllers
         public KyNangController(IKyNangBusiness business) { _business = business; }
 
         [HttpPost]
+        [Authorize]      // T11: phải đăng nhập mới được thêm kỹ năng
         public async Task<IActionResult> Tao([FromBody] TaoKyNangModel model)
         {
             var kq = await _business.TaoAsync(model);

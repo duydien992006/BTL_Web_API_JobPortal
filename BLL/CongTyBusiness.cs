@@ -14,17 +14,23 @@ namespace BLL
         private readonly ICongTyRepository _repo;
         public CongTyBusiness(ICongTyRepository repo) { _repo = repo; }
 
-        public async Task<PhanHoiModel> TaoAsync(CongTyModel model)
+        public async Task<PhanHoiModel> TaoAsync(CongTyModel model, NguoiDungHienTai nguoi)
         {
             if (string.IsNullOrWhiteSpace(model.TenCongTy))
                 return new PhanHoiModel { ThanhCong = false, ThongDiep = "Tên công ty không được để trống" };
+
+            // Người đại diện LUÔN là người đang đăng nhập, bỏ qua giá trị client gửi trong Body
+            model.NguoiDaiDienId = nguoi.Id;
 
             int id = await _repo.TaoAsync(model);
             return new PhanHoiModel { ThanhCong = true, ThongDiep = "Tạo công ty thành công, chờ xác minh", DuLieu = id };
         }
 
-        public async Task<PhanHoiModel> CapNhatAsync(CongTyModel model)
+        public async Task<PhanHoiModel> CapNhatAsync(CongTyModel model, NguoiDungHienTai nguoi)
         {
+            var congTy = QuyenHelper.PhaiTonTai(await _repo.LayTheoIdAsync(model.Id), "Không tìm thấy công ty");
+            QuyenHelper.PhaiLaChuSoHuu(congTy.NguoiDaiDienId, nguoi);
+
             bool ok = await _repo.CapNhatAsync(model);
             if (ok) return new PhanHoiModel { ThanhCong = true, ThongDiep = "Cập nhật thành công" };
             return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không tìm thấy công ty" };
@@ -41,13 +47,26 @@ namespace BLL
             return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không tìm thấy công ty" };
         }
 
-        public async Task<CongTyModel> LayTheoIdAsync(int id) { return await _repo.LayTheoIdAsync(id); }
-        public async Task<IEnumerable<CongTyModel>> LayTatCaAsync() { return await _repo.LayTatCaAsync(); }
-        public async Task<PhanHoiModel> XoaAsync(int id)
+        public async Task<PhanHoiModel> XoaAsync(int id, NguoiDungHienTai nguoi)
         {
+            var congTy = QuyenHelper.PhaiTonTai(await _repo.LayTheoIdAsync(id), "Không tìm thấy công ty");
+            QuyenHelper.PhaiLaChuSoHuu(congTy.NguoiDaiDienId, nguoi, choPhepAdmin: true);
+
             bool ok = await _repo.XoaAsync(id);
             if (ok) return new PhanHoiModel { ThanhCong = true, ThongDiep = "Đã xóa công ty" };
             return new PhanHoiModel { ThanhCong = false, ThongDiep = "Không tìm thấy công ty" };
+        }
+
+        public async Task<CongTyModel> LayTheoIdAsync(int id) { return await _repo.LayTheoIdAsync(id); }
+        public async Task<IEnumerable<CongTyModel>> LayTatCaAsync() { return await _repo.LayTatCaAsync(); }
+        public async Task<IEnumerable<CongTyModel>> LayCuaToiAsync(int nguoiDungId)
+        {
+            return await _repo.LayTheoNguoiDaiDienAsync(nguoiDungId);
+        }
+
+        public async Task<IEnumerable<CongTyModel>> LayChoXacMinhAsync()
+        {
+            return await _repo.LayChoXacMinhAsync();
         }
     }
 }

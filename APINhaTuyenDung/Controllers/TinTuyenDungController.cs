@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung")]
         public async Task<IActionResult> Tao([FromBody] TaoTinTuyenDungModel model)
         {
-            var kq = await _business.TaoAsync(model);
+            var kq = await _business.TaoAsync(model, User.LayNguoiDungHienTai());
             return this.KetQua(kq);
         }
 
@@ -25,7 +26,7 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung")]
         public async Task<IActionResult> CapNhat(int id, [FromBody] TaoTinTuyenDungModel model)
         {
-            var kq = await _business.CapNhatAsync(id, model);
+            var kq = await _business.CapNhatAsync(id, model, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
@@ -41,7 +42,7 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung")]
         public async Task<IActionResult> Dong(int id)
         {
-            var kq = await _business.DongAsync(id);
+            var kq = await _business.DongAsync(id, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
@@ -49,14 +50,15 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung,QuanTriVien")]
         public async Task<IActionResult> Xoa(int id)
         {
-            var kq = await _business.XoaAsync(id);
+            var kq = await _business.XoaAsync(id, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
+        // Endpoint công khai, nhưng nếu người gọi có gửi token thì Business biết họ là ai
         [HttpGet("{id:int}")]
         public async Task<IActionResult> LayChiTiet(int id)
         {
-            var tin = await _business.LayChiTietAsync(id);
+            var tin = await _business.LayChiTietAsync(id, User.LayNguoiDungHienTaiHoacNull());
             if (tin == null) return NotFound();
             return Ok(tin);
         }
@@ -64,18 +66,28 @@ namespace APINhaTuyenDung.Controllers
         [HttpPost("tim-kiem")]
         public async Task<IActionResult> TimKiem([FromBody] TimKiemTinModel model)
         {
-            var ds = await _business.TimKiemAsync(model);
-            return Ok(ds);
+            return Ok(await _business.TimKiemAsync(model));
         }
 
         [HttpGet("goi-y")]
         [Authorize(Roles = "UngVien")]
         public async Task<IActionResult> GoiY()
         {
-            var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
-            int ungVienId = claim != null ? int.Parse(claim.Value) : 0;
-            var ds = await _business.GoiYAsync(ungVienId);
+            var ds = await _business.GoiYAsync(User.LayNguoiDungHienTai().Id);
             return Ok(ds);
+        }
+        [HttpGet("cua-toi")]
+        [Authorize(Roles = "NhaTuyenDung")]
+        public async Task<IActionResult> CuaToi()
+        {
+            return Ok(await _business.LayCuaToiAsync(User.LayNguoiDungHienTai().Id));
+        }
+
+        [HttpGet("cho-duyet")]
+        [Authorize(Roles = "QuanTriVien")]
+        public async Task<IActionResult> ChoDuyet()
+        {
+            return Ok(await _business.LayChoDuyetAsync());
         }
     }
 }

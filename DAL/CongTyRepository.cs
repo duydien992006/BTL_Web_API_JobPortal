@@ -60,5 +60,14 @@ namespace DAL
             int soDong = await _dbHelper.ExecuteAsync("sp_congty_xoa", new { Id = id });
             return soDong > 0;
         }
+        public async Task<IEnumerable<CongTyModel>> LayTheoNguoiDaiDienAsync(int nguoiDaiDienId)
+        {
+            return await _dbHelper.QueryAsync<CongTyModel>("sp_congty_layTheoNguoiDaiDien", new { NguoiDaiDienId = nguoiDaiDienId });
+        }
+
+        public async Task<IEnumerable<CongTyModel>> LayChoXacMinhAsync()
+        {
+            return await _dbHelper.QueryAsync<CongTyModel>("sp_congty_layChoXacMinh");
+        }
     }
 }

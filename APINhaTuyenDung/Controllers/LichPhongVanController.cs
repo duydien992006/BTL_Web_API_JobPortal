@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,9 @@ namespace APINhaTuyenDung.Controllers
 
         [HttpPost("tao-lich")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> Tao([FromBody] TaoLichPhongVanModel model)   // đổi kiểu tham số
+        public async Task<IActionResult> Tao([FromBody] TaoLichPhongVanModel model)
         {
-            var kq = await _business.TaoAsync(model);
+            var kq = await _business.TaoAsync(model, User.LayNguoiDungHienTai());
             return this.KetQua(kq);
         }
 
@@ -25,7 +26,7 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung")]
         public async Task<IActionResult> CapNhatKetQua(int id, [FromQuery] string ketQua)
         {
-            var kq = await _business.CapNhatKetQuaAsync(id, ketQua);
+            var kq = await _business.CapNhatKetQuaAsync(id, ketQua, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
@@ -33,8 +34,14 @@ namespace APINhaTuyenDung.Controllers
         [Authorize]
         public async Task<IActionResult> LayTheoDon(int donUngTuyenId)
         {
-            var ds = await _business.LayTheoDonUngTuyenAsync(donUngTuyenId);
-            return Ok(ds);
+            return Ok(await _business.LayTheoDonUngTuyenAsync(donUngTuyenId, User.LayNguoiDungHienTai()));
+        }
+
+        [HttpGet("cua-toi")]
+        [Authorize(Roles = "UngVien,NhaTuyenDung")]
+        public async Task<IActionResult> CuaToi()
+        {
+            return Ok(await _business.LayCuaToiAsync(User.LayNguoiDungHienTai()));
         }
     }
 }

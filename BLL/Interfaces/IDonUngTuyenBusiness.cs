@@ -10,8 +10,9 @@ namespace BLL.Interfaces
     public interface IDonUngTuyenBusiness
     {
         Task<PhanHoiModel> NopDonAsync(NopDonModel model, int ungVienId);
-        Task<PhanHoiModel> DoiTrangThaiAsync(DoiTrangThaiDonModel model);
-        Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId);
+        Task<PhanHoiModel> DoiTrangThaiAsync(DoiTrangThaiDonModel model, NguoiDungHienTai nguoi);
+        Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId, NguoiDungHienTai nguoi);
         Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId);
+        Task<ChiTietDonUngTuyenModel> LayChiTietAsync(int id, NguoiDungHienTai nguoi);
     }
 }

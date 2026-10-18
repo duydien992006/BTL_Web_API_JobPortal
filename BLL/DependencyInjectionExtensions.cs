@@ -40,6 +40,8 @@ namespace BLL
             services.AddScoped<IThongBaoBusiness, ThongBaoBusiness>();
             services.AddScoped<IBaoCaoBusiness, BaoCaoBusiness>();
 
+            services.AddScoped<ISoHuuRepository, SoHuuRepository>();
+
             return services;
         }
     }

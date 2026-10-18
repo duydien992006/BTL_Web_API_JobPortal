@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,17 @@ namespace APINhaTuyenDung.Controllers
         [Authorize(Roles = "NhaTuyenDung")]
         public async Task<IActionResult> Tao([FromBody] CongTyModel model)
         {
-            var kq = await _business.TaoAsync(model);
+            var kq = await _business.TaoAsync(model, User.LayNguoiDungHienTai());
             return this.KetQua(kq);
+        }
+
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "NhaTuyenDung")]
+        public async Task<IActionResult> CapNhat(int id, [FromBody] CongTyModel model)
+        {
+            model.Id = id;   // Id lấy từ URL, không tin Id trong Body
+            var kq = await _business.CapNhatAsync(model, User.LayNguoiDungHienTai());
+            return this.KetQua(kq, 404);
         }
 
         [HttpPut("{id:int}/xac-minh")]
@@ -26,6 +36,14 @@ namespace APINhaTuyenDung.Controllers
         public async Task<IActionResult> XacMinh(int id, [FromQuery] bool daXacMinh)
         {
             var kq = await _business.XacMinhAsync(id, daXacMinh);
+            return this.KetQua(kq, 404);
+        }
+
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "NhaTuyenDung,QuanTriVien")]
+        public async Task<IActionResult> Xoa(int id)
+        {
+            var kq = await _business.XoaAsync(id, User.LayNguoiDungHienTai());
             return this.KetQua(kq, 404);
         }
 
@@ -40,25 +58,20 @@ namespace APINhaTuyenDung.Controllers
         [HttpGet]
         public async Task<IActionResult> LayTatCa()
         {
-            var ds = await _business.LayTatCaAsync();
-            return Ok(ds);
+            return Ok(await _business.LayTatCaAsync());
         }
-
-        [HttpPut("{id:int}")]
+        [HttpGet("cua-toi")]
         [Authorize(Roles = "NhaTuyenDung")]
-        public async Task<IActionResult> CapNhat(int id, [FromBody] CongTyModel model)
+        public async Task<IActionResult> CuaToi()
         {
-            model.Id = id;   // đảm bảo Id lấy từ URL, tránh client gửi sai Id trong Body
-            var kq = await _business.CapNhatAsync(model);
-            return this.KetQua(kq, 404);
+            return Ok(await _business.LayCuaToiAsync(User.LayNguoiDungHienTai().Id));
         }
 
-        [HttpDelete("{id:int}")]
-        [Authorize(Roles = "NhaTuyenDung,QuanTriVien")]
-        public async Task<IActionResult> Xoa(int id)
+        [HttpGet("cho-xac-minh")]
+        [Authorize(Roles = "QuanTriVien")]
+        public async Task<IActionResult> ChoXacMinh()
         {
-            var kq = await _business.XoaAsync(id);
-            return this.KetQua(kq, 404);
+            return Ok(await _business.LayChoXacMinhAsync());
         }
     }
 }

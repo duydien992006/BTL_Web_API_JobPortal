@@ -107,7 +107,8 @@ namespace Common.Handlers
                 case 2:
                 case 258:
                     return (503, "Không kết nối được tới cơ sở dữ liệu", "DB_KHONG_KET_NOI");
-
+                case 50001: // THROW từ Stored Procedure khi vi phạm quy tắc trạng thái
+                    return (409, sql.Message, "DB_VI_PHAM_QUY_TAC");
                 default:
                     return (500, ThongDiepMacDinh, "DB_LOI_KHAC");
             }

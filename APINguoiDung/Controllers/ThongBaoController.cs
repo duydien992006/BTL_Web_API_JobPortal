@@ -1,4 +1,5 @@
 ﻿using BLL.Interfaces;
+using Common.Extensions;
 using Common.Problems;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace APINguoiDung.Controllers
         [HttpPut("{id:int}/da-doc")]
         public async Task<IActionResult> DanhDauDaDoc(int id)
         {
-            var kq = await _business.DanhDauDaDocAsync(id);
+            var kq = await _business.DanhDauDaDocAsync(id, User.LayNguoiDungHienTai().Id);
             return this.KetQua(kq, 404);
         }
     }

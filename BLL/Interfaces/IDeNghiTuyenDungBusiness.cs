@@ -9,8 +9,8 @@ namespace BLL.Interfaces
 {
     public interface IDeNghiTuyenDungBusiness
     {
-        Task<PhanHoiModel> GuiAsync(GuiDeNghiModel model);   // đổi tham số
-        Task<PhanHoiModel> PhanHoiAsync(int id, bool chapNhan);
-        Task<IEnumerable<DeNghiTuyenDungModel>> LayTheoDonUngTuyenAsync(int donUngTuyenId);
+        Task<PhanHoiModel> GuiAsync(GuiDeNghiModel model, NguoiDungHienTai nguoi);
+        Task<PhanHoiModel> PhanHoiAsync(int id, bool chapNhan, NguoiDungHienTai nguoi);
+        Task<IEnumerable<DeNghiTuyenDungModel>> LayTheoDonUngTuyenAsync(int donUngTuyenId, NguoiDungHienTai nguoi);
     }
 }

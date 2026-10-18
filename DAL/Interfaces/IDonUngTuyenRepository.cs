@@ -15,5 +15,6 @@ namespace DAL.Interfaces
         Task<DonUngTuyenModel> LayTheoIdAsync(int id);
         Task<IEnumerable<dynamic>> LayTheoTinAsync(int tinId);
         Task<IEnumerable<dynamic>> LayTheoUngVienAsync(int ungVienId);
+        Task<DonUngTuyenChiTietModel> LayChiTietAsync(int id);
     }
 }

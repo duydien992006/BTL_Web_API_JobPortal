@@ -11,8 +11,9 @@ namespace BLL.Interfaces
     public interface IHoSoBusiness
     {
         Task<PhanHoiModel> TaoAsync(IFormFile file, int ungVienId, int soNamKinhNghiem, List<int> danhSachKyNangId);
-        Task<HoSoModel> LayChiTietAsync(int id);
+        Task<HoSoModel> LayChiTietAsync(int id, NguoiDungHienTai nguoi);
         Task<IEnumerable<HoSoModel>> LayDanhSachTheoUngVienAsync(int ungVienId);
         Task<PhanHoiModel> XoaAsync(int id, int ungVienId);
+        Task<FileTaiVeModel> LayFileTaiVeAsync(int id, NguoiDungHienTai nguoi);
     }
 }
