@@ -1,0 +1,11 @@
+<div class="container">
+  <h1 class="page-title">Thông báo <span class="badge green" ng-if="vm.kq.soChuaDoc">{{vm.kq.soChuaDoc}} chưa đọc</span></h1>
+  <div class="card" style="padding:0;overflow:hidden">
+    <a class="noti" ng-class="{unread: !n.daDoc}" ng-repeat="n in vm.kq.danhSach" ng-click="vm.doc(n)">
+      <i class="fa-solid fa-circle text-green" style="font-size:8px" ng-if="!n.daDoc"></i> {{n.noiDung}}
+      <div class="muted"><small>{{n.ngayTao | date:'dd/MM/yyyy HH:mm'}}</small></div>
+    </a>
+    <div class="empty" ng-if="vm.kq && !vm.kq.danhSach.length">Bạn chưa có thông báo nào.</div>
+  </div>
+  <pager trang="vm.kq.trang" tong="vm.kq.tongSoTrang" on-chon="vm.tai(t)"></pager>
+</div>

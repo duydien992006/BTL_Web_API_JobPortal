@@ -1,0 +1,49 @@
+<section class="hero">
+  <div class="container">
+    <h1>Tìm việc làm nhanh 24h, việc làm mới nhất</h1>
+    <p>Kết nối nhà tuyển dụng uy tín với ứng viên tiềm năng</p>
+    <form class="search-box" ng-submit="vm.tim()">
+      <div class="sb-field"><i class="fa-solid fa-magnifying-glass"></i>
+        <input ng-model="vm.tuKhoa" placeholder="Vị trí tuyển dụng, tên công ty..."></div>
+      <div class="sb-field"><i class="fa-solid fa-location-dot"></i>
+        <input ng-model="vm.diaDiem" placeholder="Địa điểm (VD: TP.HCM)"></div>
+      <button class="btn btn-primary">Tìm kiếm</button>
+    </form>
+    <div class="chips" ng-if="vm.kyNang.length">
+      <span>Kỹ năng nổi bật:</span>
+      <a class="chip" ng-repeat="k in vm.kyNang" ng-href="#/viec-lam?kyNang={{k.id}}">{{k.tenKyNang}}</a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section" ng-if="vm.goiY.length">
+    <h2 class="section-title">Gợi ý việc làm phù hợp với CV của bạn</h2>
+    <job-card ng-repeat="j in vm.goiY" job="j"></job-card>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Việc làm mới nhất</h2>
+    <job-card ng-repeat="j in vm.moiNhat" job="j"></job-card>
+    <div class="empty" ng-if="vm.moiNhat && !vm.moiNhat.length">Chưa có tin tuyển dụng nào.</div>
+    <div class="center"><a class="btn btn-outline" href="#/viec-lam">Xem tất cả việc làm</a></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Nhà tuyển dụng hàng đầu</h2>
+    <div class="grid g4">
+      <a class="card company-card" ng-repeat="c in vm.congTy" ng-href="#/viec-lam?tuKhoa={{c.tenCongTy}}">
+        <div class="logo-box"><img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}"><span ng-if="!c.logoUrl">{{c.tenCongTy | chuDau}}</span></div>
+        <b>{{c.tenCongTy}}</b>
+        <div class="muted">{{c.diaChi}}</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="cta">
+      <div><h3 style="margin:0">Tạo CV chuyên nghiệp chỉ trong vài phút</h3><div>Tải về các mẫu CV đẹp, chuẩn nhà tuyển dụng.</div></div>
+      <a class="btn" href="#/mau-cv">Xem mẫu CV</a>
+    </div>
+  </section>
+</div>

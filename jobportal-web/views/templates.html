@@ -1,0 +1,13 @@
+<div class="container">
+  <h1 class="page-title">Mẫu CV</h1>
+  <div class="grid g3">
+    <div class="card" ng-repeat="m in vm.ds">
+      <div style="font-size:36px;color:var(--g)"><i class="fa-regular fa-file-lines"></i></div>
+      <h3 class="mt">{{m.tenMau}}</h3>
+      <p class="muted">{{m.moTa}}</p>
+      <div class="muted mb">{{m.tenFileGoc}}</div>
+      <button class="btn btn-primary btn-sm" ng-click="vm.taiVe(m)"><i class="fa-solid fa-download"></i> Tải về</button>
+    </div>
+  </div>
+  <div class="empty" ng-if="vm.ds && !vm.ds.length">Chưa có mẫu CV nào. Quản trị viên có thể thêm trong mục Danh mục.</div>
+</div>

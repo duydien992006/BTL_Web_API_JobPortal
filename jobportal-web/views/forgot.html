@@ -1,0 +1,28 @@
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <!-- Bước 1: nhập email -->
+    <div ng-if="!vm.datLai">
+      <h2>Quên mật khẩu</h2>
+      <p class="muted mb">Nhập email, chúng tôi sẽ gửi liên kết đặt lại mật khẩu (hiệu lực 15 phút).</p>
+      <form name="f1" ng-submit="f1.$valid && vm.guiYeuCau()" novalidate>
+        <div class="form-group"><label>Email</label><input type="email" ng-model="vm.f.email" required></div>
+        <div class="error-text" ng-if="vm.loi">{{vm.loi}}</div>
+        <div class="note green" ng-if="vm.thongBao">{{vm.thongBao}}</div>
+        <button class="btn btn-primary btn-block" ng-disabled="f1.$invalid">Gửi yêu cầu</button>
+      </form>
+      <div class="auth-links"><a href="" ng-click="vm.datLai=true">Tôi đã có mã đặt lại</a><a href="#/dang-nhap">Quay lại đăng nhập</a></div>
+    </div>
+    <!-- Bước 2: nhập mật khẩu mới -->
+    <div ng-if="vm.datLai">
+      <h2>Đặt mật khẩu mới</h2>
+      <form name="f2" ng-submit="f2.$valid && vm.doiMatKhau()" novalidate>
+        <div class="form-group"><label>Email</label><input type="email" ng-model="vm.f.email" required></div>
+        <div class="form-group"><label>Mã đặt lại</label><input ng-model="vm.f.token" required></div>
+        <div class="form-group"><label>Mật khẩu mới (từ 6 ký tự)</label><input type="password" ng-model="vm.f.matKhauMoi" required minlength="6" maxlength="72"></div>
+        <div class="form-group"><label>Nhập lại mật khẩu mới</label><input type="password" ng-model="vm.f.nhapLai" required></div>
+        <div class="error-text" ng-if="vm.loi">{{vm.loi}}</div>
+        <button class="btn btn-primary btn-block" ng-disabled="f2.$invalid">Đặt lại mật khẩu</button>
+      </form>
+    </div>
+  </div>
+</div>

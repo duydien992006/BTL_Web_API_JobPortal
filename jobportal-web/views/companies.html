@@ -1,0 +1,12 @@
+<div class="container">
+  <h1 class="page-title">Danh sách công ty</h1>
+  <div class="grid g4">
+    <a class="card company-card" ng-repeat="c in vm.kq.danhSach" ng-href="#/viec-lam?tuKhoa={{c.tenCongTy}}">
+      <div class="logo-box"><img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}"><span ng-if="!c.logoUrl">{{c.tenCongTy | chuDau}}</span></div>
+      <b>{{c.tenCongTy}}</b> <i class="fa-solid fa-circle-check text-green" ng-if="c.daXacMinh"></i>
+      <div class="muted">{{c.diaChi}}</div>
+    </a>
+  </div>
+  <div class="empty" ng-if="vm.kq && !vm.kq.danhSach.length">Chưa có công ty nào.</div>
+  <pager trang="vm.kq.trang" tong="vm.kq.tongSoTrang" on-chon="vm.tai(t)"></pager>
+</div>

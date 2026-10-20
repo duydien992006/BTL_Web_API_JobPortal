@@ -1,0 +1,26 @@
+<div class="container">
+  <h1 class="page-title">Duyệt nội dung</h1>
+
+  <h3>Tin tuyển dụng chờ duyệt ({{vm.tin.length || 0}})</h3>
+  <div class="table-wrap mb"><table class="table">
+    <thead><tr><th>Tin</th><th>Công ty</th><th>Ngày đăng</th><th></th></tr></thead>
+    <tbody><tr ng-repeat="t in vm.tin">
+      <td><a class="job-title" ng-href="#/viec-lam/{{t.id}}">{{t.tieuDe}}</a><div class="muted">{{t.diaDiem}} · {{t.mucLuongTu | luong:t.mucLuongDen}}</div></td>
+      <td>{{t.tenCongTy}} <span class="badge" ng-class="t.congTyDaXacMinh ? 'green':'orange'">{{t.congTyDaXacMinh ? 'Đã xác minh' : 'Chưa xác minh'}}</span></td>
+      <td>{{t.ngayDang | date:'dd/MM/yyyy HH:mm'}}</td>
+      <td><div class="row"><button class="btn btn-primary btn-sm" ng-click="vm.duyet(t,true)">Duyệt</button>
+        <button class="btn btn-danger btn-sm" ng-click="vm.duyet(t,false)">Từ chối</button></div></td>
+    </tr></tbody>
+  </table></div>
+  <div class="empty" ng-if="vm.tin && !vm.tin.length">Không có tin nào chờ duyệt.</div>
+
+  <h3 class="mt">Công ty chờ xác minh ({{vm.congTy.length || 0}})</h3>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Công ty</th><th>Địa chỉ</th><th></th></tr></thead>
+    <tbody><tr ng-repeat="c in vm.congTy">
+      <td><b>{{c.tenCongTy}}</b><div class="muted">{{c.moTa}}</div></td><td>{{c.diaChi}}</td>
+      <td><button class="btn btn-primary btn-sm" ng-click="vm.xacMinh(c)">Xác minh</button></td>
+    </tr></tbody>
+  </table></div>
+  <div class="empty" ng-if="vm.congTy && !vm.congTy.length">Không có công ty nào chờ xác minh.</div>
+</div>

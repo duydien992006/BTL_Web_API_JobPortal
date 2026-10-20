@@ -1,0 +1,39 @@
+<div class="container" ng-if="vm.d">
+  <h1 class="page-title">Tổng quan tuyển dụng</h1>
+  <div class="grid g4">
+    <div class="card stat"><div class="ico"><i class="fa-solid fa-inbox"></i></div><div><b>{{vm.d.viecCanLam.donChoXemXet}}</b><span class="muted">Đơn chờ xem xét</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-regular fa-calendar-check"></i></div><div><b>{{vm.d.viecCanLam.lichChuaCoKetQua}}</b><span class="muted">Lịch PV chưa ghi kết quả</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-solid fa-gift"></i></div><div><b>{{vm.d.viecCanLam.deNghiChoPhanHoi}}</b><span class="muted">Offer chờ phản hồi</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-regular fa-clock"></i></div><div><b>{{vm.d.viecCanLam.tinChoDuyet}}</b><span class="muted">Tin chờ duyệt</span></div></div>
+  </div>
+
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3>Pipeline ứng tuyển ({{vm.d.tongDon}} đơn)</h3>
+      <div class="bar-row" ng-repeat="x in vm.d.pipeline">
+        <span>{{x.nhan | nhan}}</span>
+        <div class="bar"><i ng-style="{width: vm.pt(x.soLuong) + '%'}"></i></div>
+        <b>{{x.soLuong}}</b>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Lịch phỏng vấn sắp tới</h3>
+      <div class="note" ng-repeat="l in vm.d.lichSapToi">
+        <b>{{l.thoiGianPhongVan | date:'dd/MM HH:mm'}}</b> · {{l.hoTenUngVien}}<div class="muted">{{l.tieuDe}} · {{l.diaDiemPhongVan}}</div>
+      </div>
+      <div class="empty" ng-if="!vm.d.lichSapToi.length">Không có lịch sắp tới.</div>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <h3>Thống kê theo tin</h3>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Tin tuyển dụng</th><th>Tổng</th><th>Đã nộp</th><th>Xem xét</th><th>PV</th><th>Offer</th><th>Trúng tuyển</th></tr></thead>
+      <tbody><tr ng-repeat="t in vm.d.theoTin">
+        <td><a class="text-green" ng-href="#/nha-tuyen-dung/tin/{{t.tinId}}/ung-vien">{{t.tieuDe}}</a>
+          <span class="badge" ng-class="t.trangThaiTin | mau">{{t.trangThaiTin | nhan}}</span></td>
+        <td><b>{{t.tongDon}}</b></td><td>{{t.daNop}}</td><td>{{t.dangXemXet}}</td><td>{{t.phongVan}}</td><td>{{t.deNghi}}</td><td>{{t.trungTuyen}}</td>
+      </tr></tbody>
+    </table></div>
+  </div>
+</div>

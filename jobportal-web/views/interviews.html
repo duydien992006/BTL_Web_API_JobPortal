@@ -1,0 +1,25 @@
+<div class="container">
+  <h1 class="page-title">Lịch phỏng vấn</h1>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Thời gian</th><th>Vị trí</th><th>{{vm.laNTD ? 'Ứng viên' : 'Công ty'}}</th><th>Địa điểm</th><th>Kết quả</th><th ng-if="vm.laNTD"></th></tr></thead>
+      <tbody>
+        <tr ng-repeat="l in vm.ds">
+          <td><b>{{l.thoiGianPhongVan | date:'dd/MM/yyyy HH:mm'}}</b>
+            <div class="text-green" ng-if="vm.sapToi(l)"><small>Sắp diễn ra</small></div></td>
+          <td>{{l.tieuDe}}</td>
+          <td>{{vm.laNTD ? l.hoTenUngVien : l.tenCongTy}}</td>
+          <td>{{l.diaDiemPhongVan}}</td>
+          <td><span class="badge" ng-class="l.ketQua | mau">{{l.ketQua | nhan}}</span></td>
+          <td ng-if="vm.laNTD">
+            <span ng-if="l.ketQua==='ChoKetQua'">
+              <button class="btn btn-primary btn-sm" ng-click="vm.ghiKetQua(l,'Dat')">Đạt</button>
+              <button class="btn btn-danger btn-sm" ng-click="vm.ghiKetQua(l,'KhongDat')">Không đạt</button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="empty" ng-if="vm.ds && !vm.ds.length">Chưa có lịch phỏng vấn nào.</div>
+</div>

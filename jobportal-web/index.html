@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi" ng-app="jobportal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JobPortal - Tìm việc nhanh, tuyển dụng hiệu quả</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body ng-controller="HeaderCtrl as h">
+
+  <!-- ===== Thanh trên cùng ===== -->
+  <header class="header">
+    <div class="container header-top">
+      <a class="logo" href="#/"><i class="fa-solid fa-briefcase"></i> Job<span>Portal</span></a>
+      <nav class="nav">
+        <a href="#/viec-lam" ng-class="{active: h.active('/viec-lam')}">Việc làm</a>
+        <a href="#/cong-ty" ng-class="{active: h.active('/cong-ty')}">Công ty</a>
+        <a href="#/mau-cv" ng-class="{active: h.active('/mau-cv')}">Mẫu CV</a>
+      </nav>
+      <div class="header-right">
+        <div ng-if="!h.auth.daDangNhap()">
+          <a class="btn btn-outline btn-sm" href="#/dang-nhap">Đăng nhập</a>
+          <a class="btn btn-primary btn-sm" href="#/dang-ky">Đăng ký</a>
+        </div>
+        <div class="row" ng-if="h.auth.daDangNhap()">
+          <a class="bell" href="#/thong-bao" title="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="dot" ng-if="h.chuaDoc">{{h.chuaDoc}}</span>
+          </a>
+          <div class="user-menu">
+            <span class="avatar">{{h.auth.nguoiDung().hoTen | chuDau}}</span>
+            <span class="user-name">{{h.auth.nguoiDung().hoTen}}</span>
+            <div class="dropdown">
+              <a href="#/tai-khoan"><i class="fa-regular fa-user"></i> Tài khoản</a>
+              <a href="" ng-click="h.dangXuat()"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh phụ theo vai trò -->
+    <div class="subnav" ng-if="h.auth.daDangNhap()">
+      <div class="container">
+        <span ng-if="h.auth.laUV()">
+          <a href="#/ung-vien/ho-so" ng-class="{active: h.active('/ung-vien/ho-so')}">Hồ sơ &amp; CV</a>
+          <a href="#/ung-vien/don-ung-tuyen" ng-class="{active: h.active('/ung-vien/don-ung-tuyen')}">Đơn ứng tuyển</a>
+          <a href="#/lich-phong-van" ng-class="{active: h.active('/lich-phong-van')}">Lịch phỏng vấn</a>
+        </span>
+        <span ng-if="h.auth.laNTD()">
+          <a href="#/nha-tuyen-dung/dashboard" ng-class="{active: h.active('/nha-tuyen-dung/dashboard')}">Tổng quan</a>
+          <a href="#/nha-tuyen-dung/cong-ty" ng-class="{active: h.active('/nha-tuyen-dung/cong-ty')}">Công ty</a>
+          <a href="#/nha-tuyen-dung/tin" ng-class="{active: h.active('/nha-tuyen-dung/tin')}">Tin tuyển dụng</a>
+          <a href="#/lich-phong-van" ng-class="{active: h.active('/lich-phong-van')}">Lịch phỏng vấn</a>
+        </span>
+        <span ng-if="h.auth.laAdmin()">
+          <a href="#/admin/dashboard" ng-class="{active: h.active('/admin/dashboard')}">Tổng quan</a>
+          <a href="#/admin/duyet" ng-class="{active: h.active('/admin/duyet')}">Duyệt nội dung</a>
+          <a href="#/admin/nguoi-dung" ng-class="{active: h.active('/admin/nguoi-dung')}">Người dùng</a>
+          <a href="#/admin/danh-muc" ng-class="{active: h.active('/admin/danh-muc')}">Danh mục</a>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Nội dung từng trang hiện ở đây ===== -->
+  <main class="main" app-view></main>
+
+  <footer class="footer">
+    <div class="container">
+      <b>JobPortal</b> · Đề tài 14: Quản lý việc làm trực tuyến · Học phần Phát triển phần mềm hướng dịch vụ
+    </div>
+  </footer>
+
+  <!-- ===== Thông báo nổi ===== -->
+  <div class="toast-wrap">
+    <div class="toast" ng-class="t.loai" ng-repeat="t in toasts">{{t.noiDung}}</div>
+  </div>
+
+    <!-- AngularJS của thầy (không dùng CDN, không cần angular-route) -->
+  <script src="js/angular.min.js"></script>
+  <script src="js/global.js"></script>
+
+  <!-- Mỗi trang 1 file JS -->
+  <script src="js/home.js"></script>
+  <script src="js/danhmuc.js"></script>
+  <script src="js/chitiet.js"></script>
+  <script src="js/congty.js"></script>
+  <script src="js/maucv.js"></script>
+  <script src="js/dangnhap.js"></script>
+  <script src="js/dangky.js"></script>
+  <script src="js/quenmatkhau.js"></script>
+  <script src="js/thongbao.js"></script>
+  <script src="js/taikhoan.js"></script>
+  <script src="js/hoso.js"></script>
+  <script src="js/donungtuyen.js"></script>
+  <script src="js/lichphongvan.js"></script>
+  <script src="js/ntdashboard.js"></script>
+  <script src="js/ntcongty.js"></script>
+  <script src="js/nttin.js"></script>
+  <script src="js/nttinform.js"></script>
+  <script src="js/ntungvien.js"></script>
+  <script src="js/addashboard.js"></script>
+  <script src="js/adduyet.js"></script>
+  <script src="js/adnguoidung.js"></script>
+  <script src="js/addanhmuc.js"></script>
+</body>
+</html>

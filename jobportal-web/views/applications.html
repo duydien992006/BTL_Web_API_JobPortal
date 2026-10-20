@@ -1,0 +1,64 @@
+<div class="container">
+  <h1 class="page-title">Đơn ứng tuyển của tôi</h1>
+  <div class="toolbar">
+    <select ng-model="vm.trangThai" ng-change="vm.tai(1)">
+      <option value="">Tất cả trạng thái</option>
+      <option ng-repeat="t in vm.dsTrangThai" value="{{t}}">{{t | nhan}}</option>
+    </select>
+  </div>
+
+  <div class="card app-card" ng-repeat="d in vm.kq.danhSach">
+    <div class="row between">
+      <div>
+        <a class="job-title" ng-href="#/viec-lam/{{d.tinTuyenDungId}}">{{d.tieuDe}}</a>
+        <div class="job-company">{{d.tenCongTy}} · {{d.diaDiem}}</div>
+        <div class="muted">Nộp lúc {{d.ngayUngTuyen | date:'dd/MM/yyyy HH:mm'}}</div>
+      </div>
+      <span class="badge" ng-class="d.trangThai | mau">{{d.trangThai | nhan}}</span>
+    </div>
+    <div class="note" ng-if="d.lichPhongVanGanNhat"><i class="fa-regular fa-calendar"></i>
+      Lịch phỏng vấn gần nhất: <b>{{d.lichPhongVanGanNhat | date:'dd/MM/yyyy HH:mm'}}</b></div>
+    <div class="note green" ng-if="d.deNghiId"><i class="fa-solid fa-gift"></i>
+      Offer: <b>{{d.mucLuongDeNghi | number}} đ</b>, bắt đầu {{d.ngayBatDauLamViec | date:'dd/MM/yyyy':'UTC'}}
+      <span class="badge" ng-class="d.trangThaiDeNghi | mau">{{d.trangThaiDeNghi | nhan}}</span></div>
+    <div class="actions">
+      <button class="btn btn-ghost btn-sm" ng-click="vm.xem(d)">Chi tiết &amp; lịch sử</button>
+      <button class="btn btn-primary btn-sm" ng-if="d.trangThai==='DeNghi' && d.trangThaiDeNghi==='DaGui'" ng-click="vm.phanHoi(d, true)">Chấp nhận offer</button>
+      <button class="btn btn-danger btn-sm" ng-if="d.trangThai==='DeNghi' && d.trangThaiDeNghi==='DaGui'" ng-click="vm.phanHoi(d, false)">Từ chối offer</button>
+      <button class="btn btn-danger btn-sm" ng-if="vm.coTheRut(d)" ng-click="vm.rut(d)">Rút đơn</button>
+    </div>
+  </div>
+  <div class="empty card" ng-if="vm.kq && !vm.kq.danhSach.length">Chưa có đơn ứng tuyển nào. <a class="text-green" href="#/viec-lam">Tìm việc ngay</a></div>
+  <pager trang="vm.kq.trang" tong="vm.kq.tongSoTrang" on-chon="vm.tai(t)"></pager>
+</div>
+
+<!-- Chi tiết đơn -->
+<div class="modal-bg" ng-if="vm.hien" ng-click="vm.hien=false">
+  <div class="modal modal-lg" ng-click="$event.stopPropagation()">
+    <div class="modal-head"><h3>{{vm.ct.don.tieuDe}} · {{vm.ct.don.tenCongTy}}</h3><button class="x" ng-click="vm.hien=false">×</button></div>
+    <div class="modal-body">
+      <div class="spinner" ng-if="!vm.ct"><i class="fa-solid fa-spinner fa-spin"></i></div>
+      <div ng-if="vm.ct">
+        <h4>Lịch sử trạng thái</h4>
+        <ul class="timeline">
+          <li ng-repeat="l in vm.ct.lichSu">
+            <span class="badge" ng-class="l.denTrangThai | mau">{{l.denTrangThai | nhan}}</span>
+            <span class="muted">{{l.thoiGian | date:'dd/MM/yyyy HH:mm'}}</span>
+          </li>
+        </ul>
+        <h4>Lịch phỏng vấn</h4>
+        <div class="muted" ng-if="!vm.ct.lichPhongVan.length">Chưa có lịch phỏng vấn.</div>
+        <div class="note" ng-repeat="l in vm.ct.lichPhongVan">
+          <b>{{l.thoiGianPhongVan | date:'dd/MM/yyyy HH:mm'}}</b> tại {{l.diaDiemPhongVan}}
+          <span class="badge" ng-class="l.ketQua | mau">{{l.ketQua | nhan}}</span>
+        </div>
+        <h4>Đề nghị tuyển dụng</h4>
+        <div class="muted" ng-if="!vm.ct.deNghi.length">Chưa có đề nghị.</div>
+        <div class="note green" ng-repeat="n in vm.ct.deNghi">
+          Lương <b>{{n.mucLuongDeNghi | number}} đ</b>, bắt đầu {{n.ngayBatDauLamViec | date:'dd/MM/yyyy':'UTC'}}
+          <span class="badge" ng-class="n.trangThai | mau">{{n.trangThai | nhan}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

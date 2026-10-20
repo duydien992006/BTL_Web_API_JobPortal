@@ -1,0 +1,20 @@
+<div class="container layout-2">
+  <aside class="card">
+    <h3>Bộ lọc tìm kiếm</h3>
+    <div class="form-group"><label>Từ khóa</label><input ng-model="vm.loc.tuKhoa" placeholder="Vị trí, công ty..."></div>
+    <div class="form-group"><label>Địa điểm</label><input ng-model="vm.loc.diaDiem" placeholder="VD: TP.HCM"></div>
+    <div class="form-group"><label>Mức lương tối thiểu</label>
+      <select ng-model="vm.loc.luongToiThieu" ng-options="o.v as o.t for o in vm.luongOpts"></select></div>
+    <div class="form-group"><label>Kỹ năng</label>
+      <div class="check-list"><label ng-repeat="k in vm.kyNang"><input type="checkbox" ng-model="vm.chon[k.id]"> {{k.tenKyNang}}</label></div></div>
+    <button class="btn btn-primary btn-block" ng-click="vm.tim(1)">Áp dụng</button>
+    <button class="btn btn-ghost btn-block" ng-click="vm.xoaLoc()">Xóa bộ lọc</button>
+  </aside>
+  <section>
+    <div class="mb"><b>{{vm.kq.tongSo}}</b> việc làm phù hợp</div>
+    <div class="spinner" ng-if="vm.dangTai"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div>
+    <job-card ng-repeat="j in vm.kq.danhSach" job="j"></job-card>
+    <div class="empty" ng-if="!vm.dangTai && !vm.kq.danhSach.length">Không tìm thấy việc làm phù hợp.</div>
+    <pager trang="vm.kq.trang" tong="vm.kq.tongSoTrang" on-chon="vm.tim(t)"></pager>
+  </section>
+</div>

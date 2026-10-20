@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="empty card mt" ng-if="vm.khongCo">Tin tuyển dụng không tồn tại hoặc chưa được duyệt.
+    <div class="mt"><a class="btn btn-outline" href="#/viec-lam">Quay lại danh sách</a></div></div>
+
+  <div class="layout-2" ng-if="vm.tin" style="grid-template-columns:1fr 320px">
+    <section>
+      <div class="card">
+        <div class="row between">
+          <h1 style="font-size:24px">{{vm.tin.tieuDe}}</h1>
+          <span class="badge" ng-class="vm.tin.trangThai | mau">{{vm.tin.trangThai | nhan}}</span>
+        </div>
+        <div class="row mt" style="flex-wrap:wrap;gap:24px">
+          <div><div class="muted">Mức lương</div><div class="salary">{{vm.tin.mucLuongTu | luong:vm.tin.mucLuongDen}}</div></div>
+          <div><div class="muted">Địa điểm</div><b>{{vm.tin.diaDiem}}</b></div>
+          <div><div class="muted">Hạn nộp hồ sơ</div><b>{{vm.tin.ngayHetHan | date:'dd/MM/yyyy'}}</b></div>
+        </div>
+        <div class="mt">
+          <a class="btn btn-primary" ng-if="vm.auth.laUV() && vm.tin.trangThai === 'DaDuyet' && !vm.hetHan() && !vm.daNop" ng-click="vm.moNop()">
+            <i class="fa-regular fa-paper-plane"></i> Ứng tuyển ngay</a>
+          <a class="btn btn-primary" ng-if="!vm.auth.daDangNhap()" href="#/dang-nhap">Đăng nhập để ứng tuyển</a>
+          <span class="badge green" ng-if="vm.daNop">Bạn đã nộp đơn cho tin này</span>
+          <span class="badge gray" ng-if="vm.hetHan()">Tin đã hết hạn nhận hồ sơ</span>
+        </div>
+      </div>
+      <div class="card mt">
+        <h3>Kỹ năng yêu cầu</h3>
+        <div class="tags"><span class="tag" ng-repeat="k in vm.tin.danhSachKyNang">{{k.tenKyNang}}</span></div>
+        <h3 class="mt">Mô tả công việc</h3>
+        <div class="desc">{{vm.tin.moTaCongViec}}</div>
+      </div>
+    </section>
+    <aside class="card" ng-if="vm.congTy">
+      <div class="logo-box mb"><img ng-if="vm.congTy.logoUrl" ng-src="{{vm.congTy.logoUrl}}"><span ng-if="!vm.congTy.logoUrl">{{vm.congTy.tenCongTy | chuDau}}</span></div>
+      <h3>{{vm.congTy.tenCongTy}} <i class="fa-solid fa-circle-check text-green" ng-if="vm.congTy.daXacMinh"></i></h3>
+      <p class="muted"><i class="fa-solid fa-location-dot"></i> {{vm.congTy.diaChi}}</p>
+      <p class="desc mt">{{vm.congTy.moTa}}</p>
+    </aside>
+  </div>
+</div>
+
+<!-- Cửa sổ chọn CV để nộp -->
+<div class="modal-bg" ng-if="vm.hienNop" ng-click="vm.hienNop=false">
+  <div class="modal" ng-click="$event.stopPropagation()">
+    <div class="modal-head"><h3>Ứng tuyển: {{vm.tin.tieuDe}}</h3><button class="x" ng-click="vm.hienNop=false">×</button></div>
+    <div class="modal-body">
+      <div ng-if="vm.hoSo.length">
+        <div class="form-group"><label>Chọn CV để nộp</label>
+          <select ng-model="vm.hoSoId" ng-options="h.id as h.tenFileGoc for h in vm.hoSo"></select></div>
+      </div>
+      <div class="empty" ng-if="vm.hoSo && !vm.hoSo.length">Bạn chưa có CV nào.
+        <div class="mt"><a class="btn btn-outline" href="#/ung-vien/ho-so" ng-click="vm.hienNop=false">Tải CV lên</a></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" ng-click="vm.hienNop=false">Hủy</button>
+      <button class="btn btn-primary" ng-click="vm.nop()" ng-disabled="!vm.hoSoId || vm.dangNop">Nộp đơn</button>
+    </div>
+  </div>
+</div>

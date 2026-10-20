@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row between"><h1 class="page-title">Tin tuyển dụng của tôi</h1>
+    <a class="btn btn-primary" href="#/nha-tuyen-dung/tin/moi"><i class="fa-solid fa-plus"></i> Đăng tin mới</a></div>
+  <div class="toolbar">
+    <select ng-model="vm.trangThai" ng-change="vm.tai(1)">
+      <option value="">Tất cả trạng thái</option>
+      <option value="ChoDuyet">Chờ duyệt</option><option value="DaDuyet">Đang tuyển</option>
+      <option value="TuChoi">Bị từ chối</option><option value="DaDong">Đã đóng</option>
+    </select>
+  </div>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Tin</th><th>Trạng thái</th><th>Số đơn</th><th>Hạn nộp</th><th></th></tr></thead>
+    <tbody><tr ng-repeat="j in vm.kq.danhSach">
+      <td><a class="job-title" ng-href="#/viec-lam/{{j.id}}">{{j.tieuDe}}</a><div class="muted">{{j.tenCongTy}} · {{j.diaDiem}}</div></td>
+      <td><span class="badge" ng-class="j.trangThai | mau">{{j.trangThai | nhan}}</span></td>
+      <td><a class="text-green" ng-href="#/nha-tuyen-dung/tin/{{j.id}}/ung-vien"><b>{{j.soDonUngTuyen}}</b> ứng viên</a></td>
+      <td>{{j.ngayHetHan | date:'dd/MM/yyyy'}}</td>
+      <td><div class="row">
+        <a class="btn btn-outline btn-sm" ng-href="#/nha-tuyen-dung/tin/{{j.id}}/sua">Sửa</a>
+        <button class="btn btn-ghost btn-sm" ng-if="j.trangThai==='DaDuyet'" ng-click="vm.dong(j)">Đóng</button>
+        <button class="btn btn-danger btn-sm" ng-click="vm.xoa(j)">Xóa</button>
+      </div></td>
+    </tr></tbody>
+  </table></div>
+  <div class="empty" ng-if="vm.kq && !vm.kq.danhSach.length">Chưa có tin tuyển dụng nào.</div>
+  <pager trang="vm.kq.trang" tong="vm.kq.tongSoTrang" on-chon="vm.tai(t)"></pager>
+</div>

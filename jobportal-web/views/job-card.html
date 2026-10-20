@@ -1,0 +1,21 @@
+<div class="job-card">
+  <div class="logo-box">
+    <img ng-if="job.logoUrl" ng-src="{{job.logoUrl}}" alt="">
+    <span ng-if="!job.logoUrl">{{job.tenCongTy | chuDau}}</span>
+  </div>
+  <div class="job-info">
+    <a class="job-title" ng-href="#/viec-lam/{{job.id}}">{{job.tieuDe}}</a>
+    <div class="job-company">{{job.tenCongTy}}
+      <i class="fa-solid fa-circle-check text-green" ng-if="job.congTyDaXacMinh" title="Công ty đã xác minh"></i>
+    </div>
+    <div class="tags">
+      <span class="tag"><i class="fa-solid fa-location-dot"></i> {{job.diaDiem}}</span>
+      <span class="tag" ng-repeat="k in job.kyNang">{{k}}</span>
+    </div>
+  </div>
+  <div class="job-side">
+    <div class="salary">{{job.mucLuongTu | luong:job.mucLuongDen}}</div>
+    <div class="muted">Còn {{conNgay(job.ngayHetHan)}} ngày</div>
+    <span class="match" ng-if="job.soKyNangTrungKhop">Khớp {{job.soKyNangTrungKhop}} kỹ năng</span>
+  </div>
+</div>

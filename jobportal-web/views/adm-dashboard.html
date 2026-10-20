@@ -1,0 +1,33 @@
+<div class="container">
+  <h1 class="page-title">Tổng quan hệ thống</h1>
+  <div class="grid g4" ng-if="vm.t">
+    <div class="card stat"><div class="ico"><i class="fa-solid fa-briefcase"></i></div><div><b>{{vm.t.soTinDangHoatDong}}</b><span class="muted">Tin đang tuyển</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-regular fa-clock"></i></div><div><b>{{vm.t.soTinChoDuyet}}</b><span class="muted">Tin chờ duyệt</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-solid fa-users"></i></div><div><b>{{vm.t.soUngVien}}</b><span class="muted">Ứng viên</span></div></div>
+    <div class="card stat"><div class="ico"><i class="fa-regular fa-building"></i></div><div><b>{{vm.t.soNhaTuyenDung}}</b><span class="muted">Nhà tuyển dụng</span></div></div>
+  </div>
+
+  <div class="grid g2 mt" ng-if="vm.p">
+    <div class="card">
+      <h3>Pipeline ứng tuyển toàn hệ thống ({{vm.p.tongDon}} đơn)</h3>
+      <div class="bar-row" ng-repeat="x in vm.p.donTheoTrangThai">
+        <span>{{x.nhan | nhan}}</span><div class="bar"><i ng-style="{width: vm.pt(x.soLuong, vm.maxDon) + '%'}"></i></div><b>{{x.soLuong}}</b>
+      </div>
+      <div class="note green mt">Tỷ lệ trúng tuyển: <b>{{vm.p.tyLeTrungTuyenPhanTram}}%</b></div>
+    </div>
+    <div class="card">
+      <h3>Đơn mới 14 ngày gần nhất</h3>
+      <div class="cols"><div class="col" ng-repeat="n in vm.p.donTheoNgay">
+        <span>{{n.soDon}}</span><i ng-style="{height: vm.pt(n.soDon, vm.maxNgay) + '%'}"></i>
+        <span>{{n.ngay | date:'dd/MM':'UTC'}}</span></div></div>
+    </div>
+  </div>
+
+  <div class="grid g2 mt" ng-if="vm.p">
+    <div class="card"><h3>Tin theo trạng thái</h3>
+      <div class="bar-row" ng-repeat="x in vm.p.tinTheoTrangThai"><span>{{x.nhan | nhan}}</span><b>{{x.soLuong}}</b></div></div>
+    <div class="card"><h3>Top tin nhiều ứng viên nhất</h3>
+      <div class="note" ng-repeat="t in vm.p.topTin"><b>{{t.tieuDe}}</b> · {{t.tenCongTy}} <span class="badge green">{{t.soDon}} đơn</span></div>
+      <div class="empty" ng-if="!vm.p.topTin.length">Chưa có dữ liệu.</div></div>
+  </div>
+</div>
