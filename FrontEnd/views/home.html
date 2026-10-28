@@ -33,7 +33,7 @@
     <h2 class="section-title">Nhà tuyển dụng hàng đầu</h2>
     <div class="grid g4">
       <a class="card company-card" ng-repeat="c in vm.congTy" ng-href="#/viec-lam?tuKhoa={{c.tenCongTy}}">
-        <div class="logo-box"><img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}"><span ng-if="!c.logoUrl">{{c.tenCongTy | chuDau}}</span></div>
+        <logo-box ten="c.tenCongTy" url="c.logoUrl"></logo-box>
         <b>{{c.tenCongTy}}</b>
         <div class="muted">{{c.diaChi}}</div>
       </a>

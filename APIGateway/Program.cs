@@ -30,7 +30,7 @@ try
 
     var app = builder.Build();
 
-    app.UseCors("WebFrontend");                            // 1) CORS đứng ĐẦU: trả lời preflight OPTIONS ngay
+    app.UseCors("WebFrontend");                            // 1) CORS đứng ĐẦU: trả lời 
     app.UseJobPortalErrorHandling();                       // 2) correlation + log + bắt lỗi
     app.UseMiddleware<JwtValidationMiddleware>();          // 3) kiểm tra JWT
     app.MapReverseProxy();                                 // 4) chuyển tiếp

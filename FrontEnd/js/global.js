@@ -356,6 +356,27 @@ app.directive('fileModel', function ($parse) {
   };
 });
 
+// <logo-box ten="c.tenCongTy" url="c.logoUrl">
+// Có ảnh thì hiện ảnh. Không có ảnh hoặc ảnh lỗi thì hiện chữ cái đầu của tên công ty
+app.directive('logoBox', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: { ten: '=', url: '=' },
+    template:
+      '<div class="logo-box">' +
+      '<img ng-src="{{url}}" ng-show="url && !st.loi" alt="" referrerpolicy="no-referrer">' +
+      '<span ng-show="!url || st.loi">{{ten | chuDau}}</span></div>',
+    link: function (scope, el) {
+      scope.st = { loi: false };
+      scope.$watch('url', function () { scope.st.loi = false; });
+      el.find('img').on('error', function () {          // ảnh tải lỗi -> chuyển sang chữ cái
+        scope.$evalAsync(function () { scope.st.loi = true; });
+      });
+    }
+  };
+});
+
 // <job-card job="j">
 app.directive('jobCard', function () {
   return {

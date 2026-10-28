@@ -1,8 +1,5 @@
 <div class="job-card">
-  <div class="logo-box">
-    <img ng-if="job.logoUrl" ng-src="{{job.logoUrl}}" alt="">
-    <span ng-if="!job.logoUrl">{{job.tenCongTy | chuDau}}</span>
-  </div>
+  <logo-box ten="job.tenCongTy" url="job.logoUrl"></logo-box>
   <div class="job-info">
     <a class="job-title" ng-href="#/viec-lam/{{job.id}}">{{job.tieuDe}}</a>
     <div class="job-company">{{job.tenCongTy}}

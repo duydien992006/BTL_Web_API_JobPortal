@@ -30,7 +30,7 @@
       </div>
     </section>
     <aside class="card" ng-if="vm.congTy">
-      <div class="logo-box mb"><img ng-if="vm.congTy.logoUrl" ng-src="{{vm.congTy.logoUrl}}"><span ng-if="!vm.congTy.logoUrl">{{vm.congTy.tenCongTy | chuDau}}</span></div>
+      <logo-box class="mb" ten="vm.congTy.tenCongTy" url="vm.congTy.logoUrl"></logo-box>
       <h3>{{vm.congTy.tenCongTy}} <i class="fa-solid fa-circle-check text-green" ng-if="vm.congTy.daXacMinh"></i></h3>
       <p class="muted"><i class="fa-solid fa-location-dot"></i> {{vm.congTy.diaChi}}</p>
       <p class="desc mt">{{vm.congTy.moTa}}</p>

@@ -5,7 +5,7 @@
   <div class="card app-card" ng-repeat="c in vm.ds">
     <div class="row between">
       <div class="row">
-        <div class="logo-box"><img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}"><span ng-if="!c.logoUrl">{{c.tenCongTy | chuDau}}</span></div>
+        <logo-box ten="c.tenCongTy" url="c.logoUrl"></logo-box>
         <div><b style="font-size:17px">{{c.tenCongTy}}</b>
           <span class="badge" ng-class="c.daXacMinh ? 'green' : 'orange'">{{c.daXacMinh ? 'Đã xác minh' : 'Chờ xác minh'}}</span>
           <div class="muted">{{c.diaChi}}</div></div>

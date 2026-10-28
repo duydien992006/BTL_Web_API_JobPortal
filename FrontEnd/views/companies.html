@@ -2,7 +2,7 @@
   <h1 class="page-title">Danh sách công ty</h1>
   <div class="grid g4">
     <a class="card company-card" ng-repeat="c in vm.kq.danhSach" ng-href="#/viec-lam?tuKhoa={{c.tenCongTy}}">
-      <div class="logo-box"><img ng-if="c.logoUrl" ng-src="{{c.logoUrl}}"><span ng-if="!c.logoUrl">{{c.tenCongTy | chuDau}}</span></div>
+      <logo-box ten="c.tenCongTy" url="c.logoUrl"></logo-box>
       <b>{{c.tenCongTy}}</b> <i class="fa-solid fa-circle-check text-green" ng-if="c.daXacMinh"></i>
       <div class="muted">{{c.diaChi}}</div>
     </a>
